@@ -153,7 +153,7 @@ class WebOutput:
                         if len(self.dictUniqueCrashOrderToVersionNameLists[strCrashDivId]) == 1:
                             strConcatenatedCrashDivIds = strConcatenatedCrashDivIds + "'" + strCrashDivId + "',";
                 checkBoxesDiv << input(type="checkbox", name="checkBox_" + strVersionName, checked="true", onclick="onVersionNameCheckBoxClicked(this, " + strConcatenatedCrashDivIds + ")");
-                checkBoxesDiv << 0 * HTML_TAG_SPACE + strVersionName + 6 * HTML_TAG_SPACE;
+                checkBoxesDiv << 0 * HTML_TAG_SPACE + strVersionName + 4 * HTML_TAG_SPACE;
 
             self.navDivLeft << checkBoxesDiv;
 
