@@ -1,4 +1,4 @@
-    function onClickToToggleCrashDivVisibilityById(button, crashDivId, anchorLinkId){
+    function onClickToToggleCrashDivVisibilityById(button, crashDivId, highlightButtonId, anchorLinkId){
 
         visibility = button.getAttribute("visibility");
         visibleInnerHTML = button.getAttribute("visibleInnerHTML");
@@ -7,19 +7,64 @@
         crashDiv = document.getElementById(crashDivId);
         anchorLink = document.getElementById(anchorLinkId);
 
+        highlightStatus = document.getElementById(highlightButtonId).getAttribute("highlightStatus");
+
         // 隐藏
         if(visibility == "visible"){
             crashDiv.setAttribute("hidden", "hidden");
             button.setAttribute("visibility", "invisible");
             button.innerHTML = invisibleInnerHTML;
-            anchorLink.style="color:bluefont-weight;font-weight:normal";
+            if(highlightStatus == "on"){
+                anchorLink.style="color:red;font-weight:normal";
+            } else if(highlightStatus == "off"){
+                anchorLink.style="color:blue;font-weight:normal";
+            }
         }
         // 显示
         else if(visibility == "invisible"){
             crashDiv.removeAttribute("hidden");
             button.setAttribute("visibility", "visible");
             button.innerHTML = visibleInnerHTML;
-            anchorLink.style="color:bluefont-weight;font-weight:bold";
+            if(highlightStatus == "on"){
+                anchorLink.style="color:red;font-weight:bold";
+            } else if(highlightStatus == "off"){
+                anchorLink.style="color:blue;font-weight:bold";
+            }
+        }
+    }
+
+    function onClickToToggleCrashDivHightlightById(button, crashDivId, visibilityButtonId, anchorLinkId){
+
+        highlightStatus = button.getAttribute("highlightStatus");
+        highlightOnInnerHTML = button.getAttribute("highlightOnInnerHTML");
+        highlightOffInnerHTML = button.getAttribute("highlightOffInnerHTML");
+
+        crashDiv = document.getElementById(crashDivId);
+        anchorLink = document.getElementById(anchorLinkId);
+
+        visibility = document.getElementById(visibilityButtonId).getAttribute("visibility");
+
+        // 高亮
+        if(highlightStatus == "off"){
+            button.setAttribute("highlightStatus", "on");
+            button.innerHTML = highlightOnInnerHTML;
+            crashDiv.style="color:red";
+            if(visibility == "visible"){
+                anchorLink.style="color:red;font-weight:bold";
+            } else if(visibility == "invisible"){
+                anchorLink.style="color:red;font-weight:normal";
+            }
+        }
+        // 去掉高亮
+        else if(highlightStatus == "on"){
+            button.setAttribute("highlightStatus", "off");
+            button.innerHTML = highlightOffInnerHTML;
+            crashDiv.style="color:black";
+            if(visibility == "visible"){
+                anchorLink.style="color:blue;font-weight:bold";
+            }else if(visibility == "invisible"){
+                anchorLink.style="color:blue;font-weight:normal";
+            }
         }
     }
 
@@ -55,7 +100,7 @@
 function onVersionNameCheckBoxClicked(checkBox){
     for(i = 1; i < arguments.length; i++){
         strCrashOrder = arguments[i];
-        buttonToggleCrashVisibility = document.getElementById("button_" + strCrashOrder);
+        buttonToggleCrashVisibility = document.getElementById("button_visibility_" + strCrashOrder);
         onClickToToggleCrashDivVisibilityById(buttonToggleCrashVisibility, strCrashOrder, "anchorLink_" + strCrashOrder);
     }
 }

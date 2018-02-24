@@ -81,7 +81,9 @@ class WebOutput:
         self.navDivRightTableCurRow << tableDataAnchorLink;
 
         anchor = a(name="anchor_" + strCrashOrder, cl="classAnchor");
-        anchor << button("hide crash " + strCrashOrder, id = "button_" + strCrashOrder, visibility ="visible", visibleInnerHTML ="hide crash " + strCrashOrder, invisibleInnerHTML ="show crash " + strCrashOrder, onclick ="onClickToToggleCrashDivVisibilityById(this, '" + strCrashOrder + "', 'anchorLink_" + strCrashOrder + "')");
+        anchor << button("hide crash " + strCrashOrder, id = "button_visibility_" + strCrashOrder, visibility ="visible", visibleInnerHTML ="hide crash " + strCrashOrder, invisibleInnerHTML ="show crash " + strCrashOrder, onclick ="onClickToToggleCrashDivVisibilityById(this, '" + strCrashOrder + "', 'button_highlight_" + strCrashOrder + "', 'anchorLink_" + strCrashOrder + "')");
+        anchor << HTML_TAG_SPACE * 4;
+        anchor << button("highlight crash " + strCrashOrder, id = "button_highlight_" + strCrashOrder, highlightStatus="off", highlightOnInnerHTML = "unhighlight crash " + strCrashOrder, highlightOffInnerHTML = "highlight crash " + strCrashOrder, onclick="onClickToToggleCrashDivHightlightById(this, '" + strCrashOrder + "', 'button_visibility_" + strCrashOrder + "', 'anchorLink_" + strCrashOrder + "')");
         self.contentDiv << anchor;
         self.curCrashDiv = div(id = strCrashOrder);
         self.contentDiv << self.curCrashDiv;
