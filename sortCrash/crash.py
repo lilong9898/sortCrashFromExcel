@@ -85,10 +85,12 @@ class Crash:
             # untrimmedCrashStr = untrimmedCrashStr.replace("\\n", "\n").replace("\\t", "\t");
             trimmedCrashStr = re.sub(r"\\n", "\n", untrimmedCrashStr);
             trimmedCrashStr = re.sub(r"\\t", "\t", trimmedCrashStr);
-            # 将 obj@hashCode后面的hashcode换成*，避免影响去重
+            # 将 obj@hashCFailed to allocate a 86489288 byte allocation with 33554432 free bytes and 82MB until OOMode后面的hashcode换成*，避免影响去重
             trimmedCrashStr = re.sub(r"@[0-9a-z]+", "@*", trimmedCrashStr);
             # 将 appears in /data/data/com.oppo.reader/plugins/pluginwebdiff_bookstore2/1516510781217.apk)中.apk前的数字换成*，避免影响去重
             trimmedCrashStr = re.sub(r"/[0-9]+\.apk\)", "/*.apk", trimmedCrashStr);
+            # 将Failed to allocate a xxx byte allocation with xxx free bytes and xxMB until OOM中的数字都替换成*
+            trimmedCrashStr = re.sub(r"Failed to allocate a [0-9]+ byte allocation with [0-9]+ free bytes and [0-9]+MB until OOM", "Failed to allocate * byte allocation with * free bytes and *MB until OOM", trimmedCrashStr);
             return trimmedCrashStr;
     pass
 
