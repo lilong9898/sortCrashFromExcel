@@ -101,6 +101,6 @@ function onVersionNameCheckBoxClicked(checkBox){
     for(i = 1; i < arguments.length; i++){
         strCrashOrder = arguments[i];
         buttonToggleCrashVisibility = document.getElementById("button_visibility_" + strCrashOrder);
-        onClickToToggleCrashDivVisibilityById(buttonToggleCrashVisibility, strCrashOrder, "anchorLink_" + strCrashOrder);
+        onClickToToggleCrashDivVisibilityById(buttonToggleCrashVisibility, strCrashOrder, "button_highlight_" + strCrashOrder, "anchorLink_" + strCrashOrder);
     }
 }
