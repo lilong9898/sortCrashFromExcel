@@ -91,6 +91,22 @@ class Crash:
             trimmedCrashStr = re.sub(r"/[0-9]+\.apk\)", "/*.apk", trimmedCrashStr);
             # 将Failed to allocate a xxx byte allocation with xxx free bytes and xxMB until OOM中的数字都替换成*
             trimmedCrashStr = re.sub(r"Failed to allocate a [0-9]+ byte allocation with [0-9]+ free bytes and [0-9]+MB until OOM", "Failed to allocate * byte allocation with * free bytes and *MB until OOM", trimmedCrashStr);
+            # 将pid: xxxx替换成pid: *
+            trimmedCrashStr = re.sub(r"pid: [0-9]+,", "pid: *,", trimmedCrashStr);
+            # 将tid: xxxx替换成tid: *
+            trimmedCrashStr = re.sub(r"tid: [0-9]+,", "tid: *,", trimmedCrashStr);
+            # 将name: Thread-xxxx 替换成name: Thread-*
+            trimmedCrashStr = re.sub(r"name: Thread-[0-9]+ ", "name: Thread-* ", trimmedCrashStr);
+            # 将name: GLThread xxxx 替换成name: GLThread *
+            trimmedCrashStr = re.sub(r"name: GLThread [0-9]+ ", "name: GLThread * ", trimmedCrashStr);
+            # 将com.oppo.reader-x替换成com.oppo.reader-*
+            trimmedCrashStr = re.sub(r"com.oppo.reader-[0-9]+", "com.oppo.reader-*", trimmedCrashStr);
+            # 将fault addr xxxxxx 替换成fault addr be *
+            trimmedCrashStr = re.sub(r"fault addr [0-9a-z]+ ", "fault addr * ", trimmedCrashStr);
+            # 将[at 0xxxxx]替换成[at 0x*]
+            trimmedCrashStr = re.sub(r"\[at 0x[0-9a-z]+\]", "[at 0x*]", trimmedCrashStr);
+            # 将pc xxxxxx替换成pc *
+            trimmedCrashStr = re.sub(r"pc [0-9a-z]+ ", "pc * ", trimmedCrashStr);
             return trimmedCrashStr;
     pass
 

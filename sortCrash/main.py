@@ -13,7 +13,6 @@ def sortCrashes(strXlsPath, *args):
 
     # excel工作库
     xlsFile = xlrd.open_workbook(strXlsPath);
-    xlsFile = xlrd.open_workbook(strXlsPath);
 
     # excel工作表
     xlsSheet = xlsFile.sheets()[0];
