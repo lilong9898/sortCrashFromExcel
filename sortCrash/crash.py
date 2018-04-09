@@ -76,15 +76,21 @@ class Crash:
     pass
 
 
-    # 修正错误信息的字符串，把换行符和制表符替换了，再抹掉一些无关紧要却又影响去重的字符
+    # 修正错误信息的字符串，把换行符和制表符替换了，再把干扰html的字符替换成html字符，再抹掉一些无关紧要却又影响去重的字符
     def trim(self, untrimmedCrashStr):
 
         if untrimmedCrashStr.strip() == "":
             return untrimmedCrashStr;
         else:
-            # untrimmedCrashStr = untrimmedCrashStr.replace("\\n", "\n").replace("\\t", "\t");
             trimmedCrashStr = re.sub(r"\\n", "\n", untrimmedCrashStr);
             trimmedCrashStr = re.sub(r"\\t", "\t", trimmedCrashStr);
+            # 将&换成&amp;
+            trimmedCrashStr = re.sub(r"&", "&amp;", trimmedCrashStr);
+            # 将<和>换成&lt;和&gt;
+            trimmedCrashStr = re.sub(r"<", "&lt;", trimmedCrashStr);
+            trimmedCrashStr = re.sub(r">", "&gt;", trimmedCrashStr);
+            # 将"换成&quot;
+            trimmedCrashStr = re.sub(r"\"", "&quot;", trimmedCrashStr);
             # 将 obj@hashCFailed to allocate a 86489288 byte allocation with 33554432 free bytes and 82MB until OOMode后面的hashcode换成*，避免影响去重
             trimmedCrashStr = re.sub(r"@[0-9a-z]+", "@*", trimmedCrashStr);
             # 将 appears in /data/data/com.oppo.reader/plugins/pluginwebdiff_bookstore2/1516510781217.apk)中.apk前的数字换成*，避免影响去重
