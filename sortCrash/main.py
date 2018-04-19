@@ -115,7 +115,7 @@ def sortCrashes(strXlsPath, *args):
 
         webOutput.writeCrashRatioStats(objCrash.getCrashRatioStats(totalCrashes), str(objCrash.order));
         webOutput.writeEnvStats(objCrash.getEnvStats(), str(objCrash.order));
-        webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order));
+        webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order), objCrash.getDictUniqueVersions());
         webOutput.writeCrashDateStats(objCrash.getCrashDateStats(), str(objCrash.order));
 
         # 打印crash内容
@@ -127,7 +127,7 @@ def sortCrashes(strXlsPath, *args):
             webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0]), str(objCrash.order));
 
     # 打印到浏览器
-    webOutput.printToBrowser();
+    webOutput.printToBrowser(totalCrashes);
 
     # 清除临时文件夹
     shutil.rmtree(OUTPUT_TMP_DIR_PATH);
@@ -138,7 +138,7 @@ pass
 if len(sys.argv) == 1:
     sortCrashes(INPUT_TEST_XLS_PATH);
 # 无retrace
-if len(sys.argv) == 2:
+elif len(sys.argv) == 2:
     sortCrashes(sys.argv[1]);
 # 有retrace
 elif len(sys.argv) == 3:

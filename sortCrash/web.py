@@ -38,13 +38,17 @@ class WebOutput:
         self.html << self.navDivLeft;
         self.navDivRight = self.generateNavDivRight();
         self.html << self.navDivRight;
+        self.statsDiv = self.generateStatsDiv();
+        self.html << self.statsDiv;
         self.contentDiv = div(id="idContentDiv");
         self.html << self.contentDiv;
         self.curCrashDiv = div();
         # versionName - CrashDivStats的map
-        self.dictUniqueVersionNamesToCrashDivStats = {};
+        self.dictUniqueVersionNameToCrashDivStats = {};
         # strCrashOrder - versionNames组成的list的map
         self.dictUniqueCrashOrderToVersionNameLists = {};
+        # versionName - crashCount的map
+        self.dictUniqueVersionNameToCrashCount = {};
     pass
 
     # 生成左半边导航栏
@@ -65,7 +69,12 @@ class WebOutput:
         self.navDivRightTable = table();
         self.navDivRightTableCurRow = None;
         rslt << self.navDivRightTable;
-        remainingRatioDiv = div(id="idRemainingRatioDiv");
+        return rslt;
+    pass
+
+    # 生成统计栏
+    def generateStatsDiv(self):
+        rslt = div(id="idStatsDiv");
         return rslt;
     pass
 
@@ -103,7 +112,7 @@ class WebOutput:
             self.curCrashDiv << p(strEnvStats, cl="classEnvStats");
     pass
 
-    def writeVersionStats(self, strVersionStats, setVersionNames, strCrashOrder):
+    def writeVersionStats(self, strVersionStats, setVersionNames, strCrashOrder, dictUniqueVersions):
 
         strVersionStats = re.sub(r"\n", "<br/>", strVersionStats);
 
@@ -112,11 +121,11 @@ class WebOutput:
 
             for strVersionName in setVersionNames:
                 # 统计整体的去重后的版本名列表
-                if strVersionName in self.dictUniqueVersionNamesToCrashDivStats:
-                    objCrashDivStatsOfCertainVersionName = self.dictUniqueVersionNamesToCrashDivStats[strVersionName];
+                if strVersionName in self.dictUniqueVersionNameToCrashDivStats:
+                    objCrashDivStatsOfCertainVersionName = self.dictUniqueVersionNameToCrashDivStats[strVersionName];
                     objCrashDivStatsOfCertainVersionName.addCrashDivId(strCrashOrder);
                 else:
-                    self.dictUniqueVersionNamesToCrashDivStats[strVersionName] = CrashDivStatsOfCertainVersionName(strCrashOrder);
+                    self.dictUniqueVersionNameToCrashDivStats[strVersionName] = CrashDivStatsOfCertainVersionName(strCrashOrder);
                 # 统计每个crash所对应的versionName
                 if strCrashOrder in self.dictUniqueCrashOrderToVersionNameLists:
                     listVersionNames = self.dictUniqueCrashOrderToVersionNameLists[strCrashOrder];
@@ -124,6 +133,15 @@ class WebOutput:
                         listVersionNames.append(strVersionName);
                 else:
                     self.dictUniqueCrashOrderToVersionNameLists[strCrashOrder] = [strVersionName];
+
+        for versionName in dictUniqueVersions:
+            if versionName in self.dictUniqueVersionNameToCrashCount:
+                count = self.dictUniqueVersionNameToCrashCount[versionName];
+                count = count + dictUniqueVersions[versionName].count;
+                self.dictUniqueVersionNameToCrashCount[versionName] = count;
+            else:
+                self.dictUniqueVersionNameToCrashCount[versionName] = dictUniqueVersions[versionName].count;
+
     pass
 
     def writeCrashDateStats(self, strCrashDateStats, strCrashOrder):
@@ -139,11 +157,11 @@ class WebOutput:
             self.curCrashDiv << p(strCrashMessage);
     pass
 
-    def printToBrowser(self):
+    def printToBrowser(self, numTotalCrashes):
         if self.html != None:
             # 写整体versionName复选框
-            listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNamesToCrashDivStats.items(),
-                                            key=lambda kv: kv[1].getCrashDivCount(), reverse=True)
+            listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNameToCrashDivStats.items(),
+                                                           key=lambda kv: kv[1].getCrashDivCount(), reverse=True)
             checkBoxesDiv = div(cl="classCheckBoxDiv");
             for (strVersionName, objCrashDivStats) in listUniqueVersionNamesToCrashDivStats:
                 # 提取objCrashDivStats中divId列表中的各个divId并拼接成字符串
@@ -154,10 +172,23 @@ class WebOutput:
                     if strCrashDivId in self.dictUniqueCrashOrderToVersionNameLists:
                         if len(self.dictUniqueCrashOrderToVersionNameLists[strCrashDivId]) == 1:
                             strConcatenatedCrashDivIds = strConcatenatedCrashDivIds + "'" + strCrashDivId + "',";
+                strDisplayVersionName = strVersionName;
+                if strVersionName.replace("," , "").strip() == "":
+                    strDisplayVersionName = "unknown version";
                 checkBoxesDiv << input(type="checkbox", name="checkBox_" + strVersionName, checked="true", onclick="onVersionNameCheckBoxClicked(this, " + strConcatenatedCrashDivIds + ")");
-                checkBoxesDiv << 0 * HTML_TAG_SPACE + strVersionName + 4 * HTML_TAG_SPACE;
+                checkBoxesDiv << 0 * HTML_TAG_SPACE + strDisplayVersionName + 4 * HTML_TAG_SPACE;
 
             self.navDivLeft << checkBoxesDiv;
+
+            # 统计选中的versionName的crash总数
+            crashCountsStatByVersionName = "";
+            for strVersionName in self.dictUniqueVersionNameToCrashCount:
+                strDisplayVersionName = strVersionName;
+                if strVersionName.replace("," , "").strip() == "":
+                    strDisplayVersionName = "unknown version";
+                crashCountsStatByVersionName = crashCountsStatByVersionName + strDisplayVersionName + " : " + str(self.dictUniqueVersionNameToCrashCount[strVersionName]) + 30 * HTML_TAG_SPACE;
+
+            self.statsDiv << h3("totalCrashes : " + str(numTotalCrashes) + 20 * HTML_TAG_SPACE + crashCountsStatByVersionName);
 
             self.html.addCSS(INPUT_CSS_FILE_PATH);
             self.html.addJS(INPUT_JS_FILE_PATH);

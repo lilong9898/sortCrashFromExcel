@@ -64,6 +64,10 @@ class Crash:
             self.dictUniqueVersions[objNewVersion.toString()] = objNewVersion;
     pass
 
+    # 返回dictUniqueVersions
+    def getDictUniqueVersions(self):
+        return self.dictUniqueVersions;
+    pass
 
     # 加入一条新的崩溃日期信息并去重
     def addCrashDate(self, objNewCrashDate):
