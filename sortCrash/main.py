@@ -4,7 +4,6 @@
 import xlrd
 import shutil
 import progressbar
-import sys
 from crash import *
 from web import *
 
@@ -19,12 +18,12 @@ def sortCrashes(strXlsPath, *args):
 
     # 提取各列的信息
     listStrRowCrashes = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH);
-    listStrRowAndroidVersions = xlsSheet.col_values(EXCEL_COL_INDEX_ANDROID_SDK);
+    listStrRowAndroidVersions = xlsSheet.col_values(EXCEL_COL_INDEX_ANDROID_VERSION);
     listStrRowRoms = xlsSheet.col_values(EXCEL_COL_INDEX_ROM);
     listStrVersionCodes = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_CODE);
     listStrVersionNames = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_NAME);
     listStrRowCrashDates = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH_TIME);
-    
+
     # 崩溃时间去掉时分秒，只保留日期
     for i in range(len(listStrRowCrashDates)):
         listStrRowCrashDates[i] = re.sub(r"\s[0-9]{2}:[0-9]{2}:[0-9]{2}", "", listStrRowCrashDates[i]);

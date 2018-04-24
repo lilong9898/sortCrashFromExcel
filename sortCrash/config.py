@@ -26,7 +26,7 @@ OUTPUT_HTML_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.
 HTML_TAG_SPACE = "&nbsp;";
 
 # excel表中android sdk列序号
-EXCEL_COL_INDEX_ANDROID_SDK = 0;
+EXCEL_COL_INDEX_ANDROID_VERSION = 0;
 
 # excel表中packageName列序号
 EXCEL_COL_INDEX_PACKAGE_NAME = 1;
@@ -40,17 +40,41 @@ EXCEL_COL_INDEX_ROM = 3;
 # excel表中versionCode列序号
 EXCEL_COL_INDEX_VERSION_CODE = 4;
 
+# excel表中屏幕大小列序号
+EXCEL_COL_INDEX_LCDTYPE = 5;
+
+# excel表中客户端source列序号
+EXCEL_COL_INDEX_CLIENT_SOURCE = 6;
+
 # excel表中崩溃信息列序号
 EXCEL_COL_INDEX_CRASH = 7;
 
 # excel表中versionName列序号
 EXCEL_COL_INDEX_VERSION_NAME = 8;
 
+# excel表中手机类型列序号
+EXCEL_COL_INDEX_PHONE_MODEL = 9;
+
+# excel表中id所在列序号
+EXCEL_COL_INDEX_ID = 10;
+
 # excel表中崩溃时间列序号
 EXCEL_COL_INDEX_CRASH_TIME = 11;
 
-# excel表中的用户名(即i号)列序号
-EXCEL_COL_INDEX_USER_NAME = 12;
+# excel表中i号所在的列序号
+EXCEL_COL_INDEX_I_ACCOUNT = 12;
+
+# excel表中screenish所在的列序号
+EXCEL_COL_INDEX_SCREENISH = 13;
+
+# excel表中othermsg所在的列序号
+EXCEL_COL_INDEX_OTHER_MSG = 14
+
+# excel表中的内部版本号所在列序号
+EXCEL_COL_INDEX_INTERNAL_APP_VERSION = 15;
+
+# excel表中上传时间所在列序号
+EXCEL_COL_INDEX_UPLOAD_TIME = 16;
 
 # 过滤掉的关键字
 EXCLUDE_KEY_WORDS = ();
