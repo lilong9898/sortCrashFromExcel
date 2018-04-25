@@ -39,6 +39,7 @@ td {
     padding-left:2.5%;
     padding-right:2.5%;
     padding-bottom:30px;
+    overflow:auto;
 }
 
 #idNavDivRight {
@@ -52,6 +53,7 @@ td {
     padding-left:1%;
     padding-right:1%;
     padding-bottom:20px;
+    overflow:auto;
 }
 
 #idStatsDiv {
@@ -62,6 +64,7 @@ td {
     background:#e0e0ff;
     padding-left:2.5%;
     padding-right:2.5%;
+    overflow:auto;
 }
 
 #idContentDiv {
