@@ -20,9 +20,10 @@ def sortCrashes(strXlsPath, *args):
     listStrRowCrashes = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH);
     listStrRowAndroidVersions = xlsSheet.col_values(EXCEL_COL_INDEX_ANDROID_VERSION);
     listStrRowRoms = xlsSheet.col_values(EXCEL_COL_INDEX_ROM);
-    listStrVersionCodes = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_CODE);
-    listStrVersionNames = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_NAME);
+    listStrRowVersionCodes = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_CODE);
+    listStrRowVersionNames = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_NAME);
     listStrRowCrashDates = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH_TIME);
+    listStrRowUsers = xlsSheet.col_values(EXCEL_COL_INDEX_I_ACCOUNT);
 
     # 崩溃时间去掉时分秒，只保留日期
     for i in range(len(listStrRowCrashDates)):
@@ -63,16 +64,22 @@ def sortCrashes(strXlsPath, *args):
         strRom = listStrRowRoms[i];
 
         # 获取excel中每一条的versionCode信息
-        strVersionCode = listStrVersionCodes[i];
+        strVersionCode = listStrRowVersionCodes[i];
 
         # 获取excel中每一条的versionName信息
-        strVersionName = listStrVersionNames[i];
+        strVersionName = listStrRowVersionNames[i];
 
         # 获取excel中每一条崩溃日期信息
         strCrashDate = listStrRowCrashDates[i];
 
+        # 获取excel中每一条用户信息
+        strUser = listStrRowUsers[i];
+        # 如果为空，即未统计到i号，将它设置为"unknown user"
+        if strUser.strip() == "":
+            strUser = "unknown user";
+
         # 建立crash对象
-        objCrash = Crash(strRowCrash, strAndroidVersion, strRom, strVersionCode, strVersionName, strCrashDate,
+        objCrash = Crash(strRowCrash, strAndroidVersion, strRom, strVersionCode, strVersionName, strCrashDate, strUser,
                          OUTPUT_TMP_DIR_PATH + "/crashFile_" + str(i) + ".txt");
 
         # 出现过此种错误，数量+1，新增env信息
@@ -82,6 +89,8 @@ def sortCrashes(strXlsPath, *args):
             objValueCrash.addEnv(Env(strAndroidVersion, strRom));
             objValueCrash.addVersion(Version(strVersionCode, strVersionName));
             objValueCrash.addCrashDate(CrashDate(strCrashDate));
+            objValueCrash.addUser(User(strUser));
+
         # 没出现过此种错误，加入字典
         else:
             dictUniqueCrashes[objCrash.getKey()] = objCrash;
@@ -115,6 +124,7 @@ def sortCrashes(strXlsPath, *args):
         webOutput.writeCrashRatioStats(objCrash.getCrashRatioStats(totalCrashes), str(objCrash.order));
         webOutput.writeEnvStats(objCrash.getEnvStats(), str(objCrash.order));
         webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order), objCrash.getDictUniqueVersions());
+        webOutput.writeUserStats(objCrash.getUserStats(), str(objCrash.order));
         webOutput.writeCrashDateStats(objCrash.getCrashDateStats(), str(objCrash.order));
 
         # 打印crash内容

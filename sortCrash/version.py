@@ -17,5 +17,8 @@ class Version:
     pass
 
     def toString(self):
-        return str(self.strVersionCode) + ", " + str(self.strVersionName);
+        if str(self.strVersionCode).strip() == "" and str(self.strVersionName).strip() == "":
+            return "unknown version";
+        else:
+            return str(self.strVersionCode) + ", " + str(self.strVersionName);
     pass

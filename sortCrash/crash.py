@@ -7,11 +7,12 @@ import subprocess
 from env import *;
 from crashdate import *;
 from version import *;
+from user import *;
 
 # 这个类代表一系列stack trace相同的错误信息，是错误统计的基本单位
 class Crash:
 
-    def __init__(self, strCrash, strSDKVersion, strRom, strVersionCode, strVersionName, strCrashDate, fileName):
+    def __init__(self, strCrash, strSDKVersion, strRom, strVersionCode, strVersionName, strCrashDate, strUser, fileName):
 
         # crash序号
         self.order = 0;
@@ -30,6 +31,10 @@ class Crash:
         # 去重之后的崩溃日期信息，yyyy-mm-dd形式
         crashDate = CrashDate(strCrashDate);
         self.dictUniqueCrashDates = {crashDate.toString() : crashDate}
+
+        # 去重之后的用户信息，以i号来识别用户
+        user = User(strUser);
+        self.dictUniqueUsers = {user.toString() : user}
 
         # 错误信息的原始字符串
         self.strCrash = strCrash;
@@ -79,6 +84,14 @@ class Crash:
             self.dictUniqueCrashDates[objNewCrashDate.toString()] = objNewCrashDate;
     pass
 
+    # 加入一条新的用户信息并去重
+    def addUser(self, objNewUser):
+        if objNewUser.toString() in self.dictUniqueUsers:
+            objUser = self.dictUniqueUsers[objNewUser.toString()];
+            objUser.count = objUser.count + 1;
+        else:
+            self.dictUniqueUsers[objNewUser.toString()] = objNewUser;
+    pass
 
     # 修正错误信息的字符串，把换行符和制表符替换了，再把干扰html的字符替换成html字符，再抹掉一些无关紧要却又影响去重的字符
     def trim(self, untrimmedCrashStr):
@@ -151,6 +164,8 @@ class Crash:
     def getVersionStats(self):
         versionCount = 0;
         listUniqueVersions = list(self.dictUniqueVersions.values());
+        # 按比例从高到低排序
+        listUniqueVersions = sorted(listUniqueVersions, key=lambda objVersion : objVersion.count, reverse=True);
         for objVersion in listUniqueVersions:
             versionCount = versionCount + objVersion.count;
         strVersionStats = "";
@@ -159,6 +174,22 @@ class Crash:
             if listUniqueVersions.index(objVersion) != len(listUniqueVersions) - 1:
                 strVersionStats = strVersionStats + "\n";
         return strVersionStats;
+    pass
+
+    # 打印user统计信息
+    def getUserStats(self):
+        userCount = 0;
+        listUniqueUsers = list(self.dictUniqueUsers.values());
+        # 按比例从高到底排序
+        listUniqueUsers = sorted(listUniqueUsers, key=lambda objUser : objUser.count, reverse=True);
+        for objUser in listUniqueUsers:
+            userCount = userCount + objUser.count;
+        strUserStats = "";
+        for objUser in listUniqueUsers:
+            strUserStats = strUserStats + "{0},\t{1} of {2},\t{3}%".format(objUser.toString(), objUser.count, userCount, str(round(100.0 * objUser.count / userCount)));
+            if listUniqueUsers.index(objUser) != len(listUniqueUsers) - 1:
+                strUserStats = strUserStats + "\n";
+        return strUserStats;
     pass
 
     # 打印versionNames

@@ -59,6 +59,7 @@ class WebOutput:
         rslt << button("hide version stats", visibility="visible", visibleInnerHTML ="hide version stats", invisibleInnerHTML ="show version stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classVersionStats')");
         rslt << button("hide crashDate stats", visibility="visible", visibleInnerHTML ="hide crashDate stats", invisibleInnerHTML ="show crashDate stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classCrashDateStats')");
         rslt << br();
+        rslt << button("hide user stats", visibility="visible", visibleInnerHTML ="hide user stats", invisibleInnerHTML ="show user stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classUserStats')", style="margin-top:10px");
         rslt << br();
         return rslt;
     pass
@@ -112,6 +113,12 @@ class WebOutput:
             self.curCrashDiv << p(strEnvStats, cl="classEnvStats");
     pass
 
+    def writeUserStats(self, strUserStats, strCrashOrder):
+        strUserStats = re.sub(r"\n", "<br/>", strUserStats);
+        if self.curCrashDiv != None:
+            self.curCrashDiv << p(strUserStats, cl="classUserStats");
+    pass
+
     def writeVersionStats(self, strVersionStats, setVersionNames, strCrashOrder, dictUniqueVersions):
 
         strVersionStats = re.sub(r"\n", "<br/>", strVersionStats);
@@ -162,7 +169,7 @@ class WebOutput:
             # 写整体versionName复选框
             listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNameToCrashDivStats.items(),
                                                            key=lambda kv: kv[1].getCrashDivCount(), reverse=True)
-            checkBoxesDiv = div(cl="classCheckBoxDiv");
+            checkBoxesDiv = div(cl="classCheckBoxDiv", style="margin-top:10px");
             for (strVersionName, objCrashDivStats) in listUniqueVersionNamesToCrashDivStats:
                 # 提取objCrashDivStats中divId列表中的各个divId并拼接成字符串
                 strListCrashDivIds = objCrashDivStats.getCrashDivIds();
