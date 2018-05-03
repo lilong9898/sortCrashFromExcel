@@ -125,7 +125,7 @@ class WebOutput:
         strVersionStats = re.sub(r"\n", "<br/>", strVersionStats);
 
         if self.curCrashDiv != None:
-            self.curCrashDiv << p(strVersionStats, cl="classVersionStats");
+            self.curCrashDiv << p(strVersionStats, cl="classVersionStats", hidden="hidden");
 
             for strVersionName in setVersionNames:
                 # 统计整体的去重后的版本名列表

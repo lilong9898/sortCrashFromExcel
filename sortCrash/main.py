@@ -4,7 +4,6 @@
 import xlrd
 import shutil
 import progressbar
-import datetime
 from crash import *
 from web import *
 
@@ -141,6 +140,7 @@ pass
 
 # 无输入参数，使用test.xls
 if len(sys.argv) == 1:
+
     sortCrashes(INPUT_TEST_XLS_PATH);
 # 无retrace
 elif len(sys.argv) == 2:
