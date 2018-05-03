@@ -55,11 +55,12 @@ class WebOutput:
     def generateNavDivLeft(self):
         rslt = div(id="idNavDivLeft");
         rslt << h2(os.path.basename(self.strXlsFileName) + " crash report");
-        rslt << button("hide env stats", id="idBtnEnvStats", visibility="visible", visibleInnerHTML ="hide env stats", invisibleInnerHTML ="show env stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classEnvStats')");
-        rslt << button("hide version stats", visibility="visible", visibleInnerHTML ="hide version stats", invisibleInnerHTML ="show version stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classVersionStats')");
-        rslt << button("hide crashDate stats", visibility="visible", visibleInnerHTML ="hide crashDate stats", invisibleInnerHTML ="show crashDate stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classCrashDateStats')");
+        rslt << button("show env stats", id="idBtnEnvStats", visibility="invisible", visibleInnerHTML ="hide env stats", invisibleInnerHTML ="show env stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classEnvStats')");
+        rslt << button("show version stats", visibility="invisible", visibleInnerHTML ="hide version stats", invisibleInnerHTML ="show version stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classVersionStats')");
+        rslt << button("show crashDate stats", visibility="invisible", visibleInnerHTML ="hide crashDate stats", invisibleInnerHTML ="show crashDate stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classCrashDateStats')");
         rslt << br();
-        rslt << button("hide user stats", visibility="visible", visibleInnerHTML ="hide user stats", invisibleInnerHTML ="show user stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classUserStats')", style="margin-top:10px");
+        rslt << button("show user stats", visibility="invisible", visibleInnerHTML ="hide user stats", invisibleInnerHTML ="show user stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classUserStats')", style="margin-top:10px");
+        rslt << button("show crashDateHour stats", visibility="invisible", visibleInnerHTML ="hide crashDateHour stats", invisibleInnerHTML ="show crashDateHour stats", onclick="onClickToToggleElementsVisibilityByClassName(this, 'classCrashDateHourStats')", style="margin-top:10px");
         rslt << br();
         return rslt;
     pass
@@ -110,13 +111,13 @@ class WebOutput:
     def writeEnvStats(self, strEnvStats, strCrashOrder):
         strEnvStats = re.sub(r"\n", "<br/>", strEnvStats);
         if self.curCrashDiv != None:
-            self.curCrashDiv << p(strEnvStats, cl="classEnvStats");
+            self.curCrashDiv << p(strEnvStats, cl="classEnvStats", hidden="hidden");
     pass
 
     def writeUserStats(self, strUserStats, strCrashOrder):
         strUserStats = re.sub(r"\n", "<br/>", strUserStats);
         if self.curCrashDiv != None:
-            self.curCrashDiv << p(strUserStats, cl="classUserStats");
+            self.curCrashDiv << p(strUserStats, cl="classUserStats", hidden="hidden");
     pass
 
     def writeVersionStats(self, strVersionStats, setVersionNames, strCrashOrder, dictUniqueVersions):
@@ -154,7 +155,13 @@ class WebOutput:
     def writeCrashDateStats(self, strCrashDateStats, strCrashOrder):
         strCrashDateStats = re.sub(r"\n", "<br/>", strCrashDateStats);
         if self.curCrashDiv != None:
-            self.curCrashDiv << p(strCrashDateStats, cl="classCrashDateStats");
+            self.curCrashDiv << p(strCrashDateStats, cl="classCrashDateStats", hidden="hidden");
+    pass
+
+    def writeCrashDateHourStats(self, strCrashDateHourStats, strCrashOrder):
+        strCrashDateHourStats = re.sub(r"\n", "<br/>", strCrashDateHourStats);
+        if self.curCrashDiv != None:
+            self.curCrashDiv << p(strCrashDateHourStats, cl="classCrashDateHourStats", hidden="hidden");
     pass
 
     def writeCrashMessage(self, strCrashMessage, strCrashOrder):

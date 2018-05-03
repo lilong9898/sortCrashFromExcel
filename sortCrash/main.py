@@ -4,6 +4,7 @@
 import xlrd
 import shutil
 import progressbar
+import datetime
 from crash import *
 from web import *
 
@@ -22,12 +23,14 @@ def sortCrashes(strXlsPath, *args):
     listStrRowRoms = xlsSheet.col_values(EXCEL_COL_INDEX_ROM);
     listStrRowVersionCodes = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_CODE);
     listStrRowVersionNames = xlsSheet.col_values(EXCEL_COL_INDEX_VERSION_NAME);
-    listStrRowCrashDates = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH_TIME);
+    listStrRowCrashDateTimes = xlsSheet.col_values(EXCEL_COL_INDEX_CRASH_DATETIME);
     listStrRowUsers = xlsSheet.col_values(EXCEL_COL_INDEX_I_ACCOUNT);
+    listStrRowCrashDates = [];
 
-    # 崩溃时间去掉时分秒，只保留日期
-    for i in range(len(listStrRowCrashDates)):
-        listStrRowCrashDates[i] = re.sub(r"\s[0-9]{2}:[0-9]{2}:[0-9]{2}", "", listStrRowCrashDates[i]);
+    # 提取崩溃日期
+    for i in range(len(listStrRowCrashDateTimes)):
+        parsedDateTime = datetime.datetime.strptime(listStrRowCrashDateTimes[i], "%Y-%m-%d %H:%M:%S");
+        listStrRowCrashDates.append(datetime.datetime.strftime(parsedDateTime, "%Y-%m-%d"));
 
     # 存储崩溃信息的临时文件
     if not os.path.isdir(OUTPUT_TMP_DIR_PATH):
@@ -44,18 +47,7 @@ def sortCrashes(strXlsPath, *args):
 
         # 获取excel中每一条崩溃信息
         strRowCrash = listStrRowCrashes[i];
-
-        isSkip = False;
-
-        for exclude_key_word in EXCLUDE_KEY_WORDS:
-            if exclude_key_word in strRowCrash:
-                isSkip = True;
-                break;
-
-        if isSkip:
-            continue;
-        else:
-            totalCrashes = totalCrashes + 1;
+        totalCrashes = totalCrashes + 1;
 
         # 获取excel中每一条android version信息
         strAndroidVersion = listStrRowAndroidVersions[i];
@@ -72,6 +64,9 @@ def sortCrashes(strXlsPath, *args):
         # 获取excel中每一条崩溃日期信息
         strCrashDate = listStrRowCrashDates[i];
 
+        # 获取excel中每一条崩溃日期+时间信息
+        strCrashDateTime = listStrRowCrashDateTimes[i];
+
         # 获取excel中每一条用户信息
         strUser = listStrRowUsers[i];
         # 如果为空，即未统计到i号，将它设置为"unknown user"
@@ -79,7 +74,7 @@ def sortCrashes(strXlsPath, *args):
             strUser = "unknown user";
 
         # 建立crash对象
-        objCrash = Crash(strRowCrash, strAndroidVersion, strRom, strVersionCode, strVersionName, strCrashDate, strUser,
+        objCrash = Crash(strRowCrash, strAndroidVersion, strRom, strVersionCode, strVersionName, strCrashDate, strCrashDateTime, strUser,
                          OUTPUT_TMP_DIR_PATH + "/crashFile_" + str(i) + ".txt");
 
         # 出现过此种错误，数量+1，新增env信息
@@ -89,15 +84,15 @@ def sortCrashes(strXlsPath, *args):
             objValueCrash.addEnv(Env(strAndroidVersion, strRom));
             objValueCrash.addVersion(Version(strVersionCode, strVersionName));
             objValueCrash.addCrashDate(CrashDate(strCrashDate));
+            objValueCrash.addCrashDateHour(CrashDateHour(strCrashDateTime));
             objValueCrash.addUser(User(strUser));
-
         # 没出现过此种错误，加入字典
         else:
             dictUniqueCrashes[objCrash.getKey()] = objCrash;
 
-        # 按比例从高到底排序
-        listUniqueCrashesKV = sorted(dictUniqueCrashes.items(),
-                                     key=lambda kv: kv[1].count, reverse=True)
+    # 按比例从高到底排序
+    listUniqueCrashesKV = sorted(dictUniqueCrashes.items(),
+                                 key=lambda kv: kv[1].count, reverse=True)
 
     # 排序后写入序号
     order = 1;
@@ -126,6 +121,7 @@ def sortCrashes(strXlsPath, *args):
         webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order), objCrash.getDictUniqueVersions());
         webOutput.writeUserStats(objCrash.getUserStats(), str(objCrash.order));
         webOutput.writeCrashDateStats(objCrash.getCrashDateStats(), str(objCrash.order));
+        webOutput.writeCrashDateHourStats(objCrash.getCrashDateHourStats(), str(objCrash.order));
 
         # 打印crash内容
         # 未提供mappingFile，不进行retrace，直接打印每个错误文件中的内容

@@ -5,14 +5,16 @@ import re
 import os
 import subprocess
 from env import *;
-from crashdate import *;
+from crash_date import *;
+from crash_date_hour import *;
 from version import *;
 from user import *;
+from chart import *;
 
 # 这个类代表一系列stack trace相同的错误信息，是错误统计的基本单位
 class Crash:
 
-    def __init__(self, strCrash, strSDKVersion, strRom, strVersionCode, strVersionName, strCrashDate, strUser, fileName):
+    def __init__(self, strCrash, strSDKVersion, strRom, strVersionCode, strVersionName, strCrashDate, strCrashDateTime, strUser, fileName):
 
         # crash序号
         self.order = 0;
@@ -28,9 +30,13 @@ class Crash:
         version = Version(strVersionCode, strVersionName);
         self.dictUniqueVersions = {version.toString() : version};
 
-        # 去重之后的崩溃日期信息，yyyy-mm-dd形式
+        # 去重之后的崩溃日期信息，%Y-%m-%d形式
         crashDate = CrashDate(strCrashDate);
         self.dictUniqueCrashDates = {crashDate.toString() : crashDate}
+
+        # 去重之后的崩溃日期小时信息，%Y-%m-%d %H-形式
+        crashDateHour = CrashDateHour(strCrashDateTime);
+        self.dictUniqueCrashDateHours = {crashDateHour.toString() : crashDateHour}
 
         # 去重之后的用户信息，以i号来识别用户
         user = User(strUser);
@@ -76,12 +82,20 @@ class Crash:
 
     # 加入一条新的崩溃日期信息并去重
     def addCrashDate(self, objNewCrashDate):
-
         if objNewCrashDate.toString() in self.dictUniqueCrashDates:
             objCrashDate = self.dictUniqueCrashDates[objNewCrashDate.toString()];
             objCrashDate.count = objCrashDate.count + 1;
         else:
             self.dictUniqueCrashDates[objNewCrashDate.toString()] = objNewCrashDate;
+    pass
+
+    # 加入一条新的崩溃日期小时信息并去重
+    def addCrashDateHour(self, objNewCrashDateHour):
+        if objNewCrashDateHour.toString() in self.dictUniqueCrashDateHours:
+            objCrashDateHour = self.dictUniqueCrashDateHours[objNewCrashDateHour.toString()];
+            objCrashDateHour.count = objCrashDateHour.count + 1;
+        else:
+            self.dictUniqueCrashDateHours[objNewCrashDateHour.toString()] = objNewCrashDateHour;
     pass
 
     # 加入一条新的用户信息并去重
@@ -202,7 +216,7 @@ class Crash:
         crashDateCount = 0;
         listUniqueCrashDates = list(self.dictUniqueCrashDates.values());
         # 按日期从小到大排序
-        listUniqueCrashDates = sorted(listUniqueCrashDates, key=lambda objCrashDate: objCrashDate.strCrashDate, reverse=False);
+        listUniqueCrashDates = sorted(listUniqueCrashDates, key=lambda objCrashDate: objCrashDate.toString(), reverse=False);
 
         for objCrashDate in listUniqueCrashDates:
             crashDateCount = crashDateCount + objCrashDate.count;
@@ -214,6 +228,44 @@ class Crash:
         return strCrashDateStats;
     pass
 
+    # 打印崩溃日期小时统计信息
+    def getCrashDateHourStats(self):
+        listUniqueCrashDateHours = list(self.dictUniqueCrashDateHours.values());
+        # 按日期小时从小到大排序
+        listUniqueCrashDateHours = sorted(listUniqueCrashDateHours, key=lambda objCrashDateHour: objCrashDateHour.toString(), reverse=False);
+
+        if(len(listUniqueCrashDateHours) > 1):
+            # 取最小时间
+            strMinDateHour = listUniqueCrashDateHours[0].toString();
+            # 取最大时间
+            strMaxDateHour = listUniqueCrashDateHours[len(listUniqueCrashDateHours) - 1].toString();
+        elif(len(listUniqueCrashDateHours) == 1):
+            strMinDateHour = strMaxDateHour = listUniqueCrashDateHours[0].toString();
+
+        minDateHour = datetime.datetime.strptime(strMinDateHour, "%Y-%m-%d %H-");
+        maxDateHour = datetime.datetime.strptime(strMaxDateHour, "%Y-%m-%d %H-");
+
+        # 把没有崩溃的时段也填充上
+        i = minDateHour;
+        step = datetime.timedelta(hours=1);
+
+        while i <= maxDateHour:
+            iStr = datetime.datetime.strftime(i, "%Y-%m-%d %H-");
+            if iStr not in self.dictUniqueCrashDateHours:
+                self.dictUniqueCrashDateHours[iStr] = CrashDateHour(iStr, initWithZeroCount=True);
+            i = i + step;
+
+        # 再一次按日期小时从小到大排序
+        listUniqueCrashDateHours = sorted(self.dictUniqueCrashDateHours.values(), key=lambda objCrashDateHour: objCrashDateHour.toString(), reverse=False);
+
+        strCrashDateHourStats = "";
+        for objCrashDateHour in listUniqueCrashDateHours:
+            strCrashDateHourStats = strCrashDateHourStats + "{0}, {1}".format(objCrashDateHour.toString(), objCrashDateHour.count);
+            if listUniqueCrashDateHours.index(objCrashDateHour) != len(listUniqueCrashDateHours) - 1:
+                strCrashDateHourStats = strCrashDateHourStats + "\n";
+
+        return strCrashDateHourStats;
+    pass
 
     # 打印crash比例统计信息
     def getCrashRatioStats(self, totalCrashCount):
