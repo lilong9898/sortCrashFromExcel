@@ -13,16 +13,16 @@ import random;
 EXCLUDE_MSGS = (
     # 自主抛出的异常，不会导致崩溃
     "DEBUGt_CRASH",
-
+    # "ReaderJobService",
 );
 
 #------------------------崩溃日期过滤--------------------------------
 # 需要过滤掉的日期，此日期前的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_BEFORE = ""
-# EXCLUDE_DATE_BEFORE = "20180501";
+EXCLUDE_DATE_BEFORE = "20180507";
 # 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_AFTER = ""
-# EXCLUDE_DATE_AFTER = "20180503";
+EXCLUDE_DATE_AFTER = "20180507";
 
 #-----------------------版本名过滤------------------------------------
 # 除此之外的版本名会被过滤掉，不写为不过滤
@@ -30,8 +30,9 @@ INCLUDE_VERSION_NAMES = ();
 # 形式：x.x.x.yyyyMMdd
 INCLUDE_VERSION_NAMES = ("6.2.0.20180413",);
 
-#-----------------------同一用户同一时间（指年月日时分秒都一样）的多条崩溃，只去其中一条-------------------
-# 具体不需设置
+#-----------------------同一用户同一时间（指年月日时分秒都一样）的多条崩溃，只取其中一条-------------------
+# 是否开启这个功能
+IS_FILTERING_CLUSTER_CRASHES = False;
 
 # 获取一定范围内的所有日期，输入参数为yyyyMMdd形式
 # 返回的是date对象的列表
@@ -125,34 +126,35 @@ def filterCrash(strXlsPath):
         if len(INCLUDE_VERSION_NAMES) >=1 and listStrRowVersionNames[i] not in INCLUDE_VERSION_NAMES:
             skip = True;
 
-        # 同一用户同一时间的崩溃，如果已经有了，则后来的都被过滤掉
-        # 同一用户不同时间的崩溃，如果相差一秒，则也被过滤掉
-        # 注意，如果i号为空，则要将i号的位置赋予一个随机数，因为空i号可能代表任何用户，不能视作同一个用户
-        if listStrRowIAccounts[i].strip() == "":
-            keyIAccount = str(random.randint(0,100000000));
-        else:
-            keyIAccount = listStrRowIAccounts[i];
+        if IS_FILTERING_CLUSTER_CRASHES:
+            # 同一用户同一时间的崩溃，如果已经有了，则后来的都被过滤掉
+            # 同一用户不同时间的崩溃，如果相差一秒，则也被过滤掉
+            # 注意，如果i号为空，则要将i号的位置赋予一个随机数，因为空i号可能代表任何用户，不能视作同一个用户
+            if listStrRowIAccounts[i].strip() == "":
+                keyIAccount = str(random.randint(0,100000000));
+            else:
+                keyIAccount = listStrRowIAccounts[i];
 
-        if keyIAccount in dictUniqueIAccountToCrashTimes:
-            # 上一秒的时间字符串
-            strPrevSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") - datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
-            # 这一秒的时间字符串
-            strCurSecond = listStrRowCrashTimes[i];
-            # 下一秒的时间字符串
-            strNextSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") + datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
+            if keyIAccount in dictUniqueIAccountToCrashTimes:
+                # 上一秒的时间字符串
+                strPrevSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") - datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
+                # 这一秒的时间字符串
+                strCurSecond = listStrRowCrashTimes[i];
+                # 下一秒的时间字符串
+                strNextSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") + datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
 
-            # 这个i号的所有崩溃时间
-            strListCrashTimesOfThisIAccount = dictUniqueIAccountToCrashTimes[keyIAccount];
+                # 这个i号的所有崩溃时间
+                strListCrashTimesOfThisIAccount = dictUniqueIAccountToCrashTimes[keyIAccount];
 
-            # 如果这次崩溃的时间，及其上一秒和下一秒和这个用户出现的其它崩溃的时间一样，则过滤掉
-            if strPrevSecond in strListCrashTimesOfThisIAccount or strCurSecond in strListCrashTimesOfThisIAccount or strNextSecond in strListCrashTimesOfThisIAccount:
-                skip = True;
+                # 如果这次崩溃的时间，及其上一秒和下一秒和这个用户出现的其它崩溃的时间一样，则过滤掉
+                if strPrevSecond in strListCrashTimesOfThisIAccount or strCurSecond in strListCrashTimesOfThisIAccount or strNextSecond in strListCrashTimesOfThisIAccount:
+                    skip = True;
 
-            # 这次崩溃的时间加入这个用户的崩溃时间表中
-            strListCrashTimesOfThisIAccount.append(strCurSecond);
-            dictUniqueIAccountToCrashTimes[keyIAccount] = strListCrashTimesOfThisIAccount;
-        else:
-            dictUniqueIAccountToCrashTimes[keyIAccount] = [listStrRowCrashTimes[i], ];
+                # 这次崩溃的时间加入这个用户的崩溃时间表中
+                strListCrashTimesOfThisIAccount.append(strCurSecond);
+                dictUniqueIAccountToCrashTimes[keyIAccount] = strListCrashTimesOfThisIAccount;
+            else:
+                dictUniqueIAccountToCrashTimes[keyIAccount] = [listStrRowCrashTimes[i], ];
 
         # 同一用户在某次这次崩溃的上一秒也崩溃过，则本次崩溃被过滤掉
 

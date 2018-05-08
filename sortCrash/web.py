@@ -171,7 +171,7 @@ class WebOutput:
             self.curCrashDiv << p(strCrashMessage);
     pass
 
-    def printToBrowser(self, numTotalCrashes):
+    def printToBrowser(self, numTotalCrashes, numTotalCrashTypesReaderJobService, numTotalCrashesReaderJobService, numTotalCrashTypesResourceNotFoundException, numTotalCrashesResourceNotFoundException, numTotalCrashTypesClassNotFoundException, numTotalCrashesClassNotFoundException, numTotalCrashTypeOthers, numTotalCrashesOthers):
         if self.html != None:
             # 写整体versionName复选框
             listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNameToCrashDivStats.items(),
@@ -203,6 +203,15 @@ class WebOutput:
                 crashCountsStatByVersionName = crashCountsStatByVersionName + strDisplayVersionName + " : " + str(self.dictUniqueVersionNameToCrashCount[strVersionName]) + 30 * HTML_TAG_SPACE;
 
             self.statsDiv << h3("totalCrashes : " + str(numTotalCrashes) + 20 * HTML_TAG_SPACE + crashCountsStatByVersionName);
+            self.statsDiv << h3("specific crash type stats :")
+            crashesReaderJobServicePercentage = round(100.0 * numTotalCrashesReaderJobService / numTotalCrashes);
+            crashesResourceNotFoundExceptionPercentage = round(100.0 * numTotalCrashesResourceNotFoundException / numTotalCrashes);
+            crashesClassNotFoundExceptionPercentage = round(100.0 * numTotalCrashesClassNotFoundException / numTotalCrashes);
+            crashesOthersPercentage = round(100.0 * numTotalCrashesOthers / numTotalCrashes);
+            self.statsDiv << h3("com.zhangyue.common.xeonPush.services.ReaderJobService : " + str(numTotalCrashesReaderJobService) + " (" + str(crashesReaderJobServicePercentage) + "%)" + "(" + str(numTotalCrashTypesReaderJobService)+ "types)");
+            self.statsDiv << h3("android.content.res.Resources$NotFoundException : " + str(numTotalCrashesResourceNotFoundException) + " (" + str(crashesResourceNotFoundExceptionPercentage) + "%)" + "(" + str(numTotalCrashTypesResourceNotFoundException)+ "types)");
+            self.statsDiv << h3("java.lang.ClassNotFoundException or java.lang.NoClassDefFoundError: " + str(numTotalCrashesClassNotFoundException) + " (" + str(crashesClassNotFoundExceptionPercentage) +"%)" + "(" + str(numTotalCrashTypesClassNotFoundException)+ "types)");
+            self.statsDiv << h3("others : " + str(numTotalCrashesOthers) + " (" + str(crashesOthersPercentage) + "%)" + "(" + str(numTotalCrashTypeOthers)+ "types)");
 
             self.html.addCSS(INPUT_CSS_FILE_PATH);
             self.html.addJS(INPUT_JS_FILE_PATH);

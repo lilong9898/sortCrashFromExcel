@@ -38,8 +38,27 @@ def sortCrashes(strXlsPath, *args):
     # 去重的dict
     dictUniqueCrashes = {};
 
-    # 考虑exclude掉的记录，实际有多少条崩溃记录
+    # 有多少类崩溃记录
+    totalCrashTypes = 0;
+    # 其中有多少类是ReaderJobService的问题
+    totalCrashTypesReaderJobService = 0;
+    # 其中有多少类是android.content.res.Resources$NotFoundException问题
+    totalCrashTypesResourceNotFoundException = 0;
+    # 其中有多少类是java.lang.ClassNotFoundException问题
+    totalCrashTypesClassNotFoundException = 0;
+    # 其中有多少类是其它问题
+    totalCrashTypesOthers = 0;
+
+    # 有多少条崩溃记录
     totalCrashes = 0;
+    # 其中有多少条是ReaderJobService的问题
+    totalCrashesReaderJobService = 0;
+    # 其中有多少条是android.content.res.Resources$NotFoundException问题
+    totalCrashesResourceNotFoundException = 0;
+    # 其中有多少条是java.lang.ClassNotFoundException问题
+    totalCrashesClassNotFoundException = 0;
+    # 其中有多少条是其它问题
+    totalCrashesOthers = 0;
 
     # 去重过程
     for i in range(len(listStrRowCrashes)):
@@ -113,6 +132,20 @@ def sortCrashes(strXlsPath, *args):
         keyCrash = uniqueCrashKV[0];
         objCrash = uniqueCrashKV[1];
 
+        print("i = " + str(i));
+        if "com.zhangyue.common.xeonPush.services.ReaderJobService" in objCrash.strCrash:
+            totalCrashTypesReaderJobService = totalCrashTypesReaderJobService + 1;
+            totalCrashesReaderJobService = totalCrashesReaderJobService + objCrash.count;
+        elif "android.content.res.Resources$NotFoundException" in objCrash.strCrash:
+            totalCrashTypesResourceNotFoundException = totalCrashTypesResourceNotFoundException + 1;
+            totalCrashesResourceNotFoundException = totalCrashesResourceNotFoundException + objCrash.count;
+        elif "java.lang.ClassNotFoundException" in objCrash.strCrash or "java.lang.NoClassDefFoundError" in objCrash.strCrash:
+            totalCrashTypesClassNotFoundException = totalCrashTypesClassNotFoundException + 1;
+            totalCrashesClassNotFoundException = totalCrashesClassNotFoundException + objCrash.count;
+        else:
+            totalCrashTypesOthers = totalCrashTypesOthers + 1;
+            totalCrashesOthers = totalCrashesOthers + objCrash.count;
+
         webOutput.beginCurCrash(str(objCrash.order), objCrash.getCrashRatioPercentageOnly(totalCrashes));
 
         webOutput.writeCrashRatioStats(objCrash.getCrashRatioStats(totalCrashes), str(objCrash.order));
@@ -131,7 +164,8 @@ def sortCrashes(strXlsPath, *args):
             webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0]), str(objCrash.order));
 
     # 打印到浏览器
-    webOutput.printToBrowser(totalCrashes);
+    webOutput.printToBrowser(totalCrashes, totalCrashTypesReaderJobService, totalCrashesReaderJobService, totalCrashTypesResourceNotFoundException, totalCrashesResourceNotFoundException, totalCrashTypesClassNotFoundException, totalCrashesClassNotFoundException, totalCrashTypesOthers, totalCrashesOthers);
+
 
     # 清除临时文件夹
     shutil.rmtree(OUTPUT_TMP_DIR_PATH);
