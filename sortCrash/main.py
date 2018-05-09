@@ -49,27 +49,8 @@ def sortCrashes(strXlsPath, *args):
     # 去重的dict
     dictUniqueCrashes = {};
 
-    # 有多少类崩溃记录
-    totalCrashTypes = 0;
-    # 其中有多少类是ReaderJobService的问题
-    totalCrashTypesReaderJobService = 0;
-    # 其中有多少类是android.content.res.Resources$NotFoundException问题
-    totalCrashTypesResourceNotFoundException = 0;
-    # 其中有多少类是java.lang.ClassNotFoundException问题
-    totalCrashTypesClassNotFoundException = 0;
-    # 其中有多少类是其它问题
-    totalCrashTypesOthers = 0;
-
     # 有多少条崩溃记录
     totalCrashes = 0;
-    # 其中有多少条是ReaderJobService的问题
-    totalCrashesReaderJobService = 0;
-    # 其中有多少条是android.content.res.Resources$NotFoundException问题
-    totalCrashesResourceNotFoundException = 0;
-    # 其中有多少条是java.lang.ClassNotFoundException问题
-    totalCrashesClassNotFoundException = 0;
-    # 其中有多少条是其它问题
-    totalCrashesOthers = 0;
 
     # 去重过程
     for i in range(len(listStrRowCrashes)):
@@ -151,7 +132,7 @@ def sortCrashes(strXlsPath, *args):
                 crashSameCause.crashTypeCount = crashSameCause.crashTypeCount + 1;
                 crashSameCause.crashTimeCount = crashSameCause.crashTimeCount + objCrash.count;
                 isInSameCauseList = True;
-                continue;
+                break;
 
         # 不在的话属于其它类的cause
         if not isInSameCauseList:
