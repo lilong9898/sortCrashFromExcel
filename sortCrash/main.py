@@ -5,7 +5,18 @@ import xlrd
 import shutil
 import progressbar
 from crash import *
+from crash_same_cause import *
 from web import *
+
+# 关注哪些cause进行分类统计
+SAME_CAUSE_LIST = [
+    CrashSameCause("com.zhangyue.common.xeonPush.services.ReaderJobService"),
+    CrashSameCause("android.content.res.Resources$NotFoundException"),
+    CrashSameCause("java.lang.ClassNotFoundException"),
+    CrashSameCause("java.lang.NoClassDefFoundError"),
+];
+# 不关注的都归类到others
+OTHER_CAUSE = CrashSameCause();
 
 # 打印出去重和retrace之后的崩溃信息，mappingFile是可选参数，如果不传，则不进行retrace
 def sortCrashes(strXlsPath, *args):
@@ -132,19 +143,20 @@ def sortCrashes(strXlsPath, *args):
         keyCrash = uniqueCrashKV[0];
         objCrash = uniqueCrashKV[1];
 
-        print("i = " + str(i));
-        if "com.zhangyue.common.xeonPush.services.ReaderJobService" in objCrash.strCrash:
-            totalCrashTypesReaderJobService = totalCrashTypesReaderJobService + 1;
-            totalCrashesReaderJobService = totalCrashesReaderJobService + objCrash.count;
-        elif "android.content.res.Resources$NotFoundException" in objCrash.strCrash:
-            totalCrashTypesResourceNotFoundException = totalCrashTypesResourceNotFoundException + 1;
-            totalCrashesResourceNotFoundException = totalCrashesResourceNotFoundException + objCrash.count;
-        elif "java.lang.ClassNotFoundException" in objCrash.strCrash or "java.lang.NoClassDefFoundError" in objCrash.strCrash:
-            totalCrashTypesClassNotFoundException = totalCrashTypesClassNotFoundException + 1;
-            totalCrashesClassNotFoundException = totalCrashesClassNotFoundException + objCrash.count;
-        else:
-            totalCrashTypesOthers = totalCrashTypesOthers + 1;
-            totalCrashesOthers = totalCrashesOthers + objCrash.count;
+        isInSameCauseList = False;
+        # 统计本crash是否符合关注的same cause
+        for crashSameCause in SAME_CAUSE_LIST:
+            # 某个crash属于我们关注的某个same cause
+            if crashSameCause.strCause in objCrash.strCrash:
+                crashSameCause.crashTypeCount = crashSameCause.crashTypeCount + 1;
+                crashSameCause.crashTimeCount = crashSameCause.crashTimeCount + objCrash.count;
+                isInSameCauseList = True;
+                continue;
+
+        # 不在的话属于其它类的cause
+        if not isInSameCauseList:
+            OTHER_CAUSE.crashTypeCount = OTHER_CAUSE.crashTypeCount + 1;
+            OTHER_CAUSE.crashTimeCount = OTHER_CAUSE.crashTimeCount + objCrash.count;
 
         webOutput.beginCurCrash(str(objCrash.order), objCrash.getCrashRatioPercentageOnly(totalCrashes));
 
@@ -164,8 +176,7 @@ def sortCrashes(strXlsPath, *args):
             webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0]), str(objCrash.order));
 
     # 打印到浏览器
-    webOutput.printToBrowser(totalCrashes, totalCrashTypesReaderJobService, totalCrashesReaderJobService, totalCrashTypesResourceNotFoundException, totalCrashesResourceNotFoundException, totalCrashTypesClassNotFoundException, totalCrashesClassNotFoundException, totalCrashTypesOthers, totalCrashesOthers);
-
+    webOutput.printToBrowser(totalCrashes, SAME_CAUSE_LIST, OTHER_CAUSE);
 
     # 清除临时文件夹
     shutil.rmtree(OUTPUT_TMP_DIR_PATH);
