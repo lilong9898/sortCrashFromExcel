@@ -19,10 +19,10 @@ EXCLUDE_MSGS = (
 #------------------------崩溃日期过滤--------------------------------
 # 需要过滤掉的日期，此日期前的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_BEFORE = ""
-EXCLUDE_DATE_BEFORE = "20180508";
+EXCLUDE_DATE_BEFORE = "20180510";
 # 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_AFTER = ""
-EXCLUDE_DATE_AFTER = "20180508";
+EXCLUDE_DATE_AFTER = "20180510";
 
 #-----------------------版本名过滤------------------------------------
 # 除此之外的版本名会被过滤掉，不写为不过滤
@@ -114,7 +114,13 @@ def filterCrash(strXlsPath):
         # 看看有没有要被过滤掉的日期
         if EXCLUDE_DATE_BEFORE.strip() != "" and EXCLUDE_DATE_AFTER.strip() != "":
             includeDates = dateRange(EXCLUDE_DATE_BEFORE.strip(), EXCLUDE_DATE_AFTER.strip());
-            crashDate = str(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S").date());
+            # 表中的日期有可能格式不对，要try except
+            try:
+                crashDate = str(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S").date());
+            except BaseException:
+                print("problematic date format : " + listStrRowCrashTimes[i] + " @row " + str(i) + ", skip");
+                skip = True
+
             if crashDate not in includeDates:
                 skip = True;
 
