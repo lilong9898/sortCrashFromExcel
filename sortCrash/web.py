@@ -171,7 +171,7 @@ class WebOutput:
             self.curCrashDiv << p(strCrashMessage);
     pass
 
-    def printToBrowser(self, numTotalCrashes, sameCauseList, otherCause):
+    def printToBrowser(self, strOutputHtmlAbsPath, numTotalCrashes, sameCauseList, otherCause):
         if self.html != None:
             # 写整体versionName复选框
             listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNameToCrashDivStats.items(),
@@ -211,7 +211,7 @@ class WebOutput:
 
             self.html.addCSS(INPUT_CSS_FILE_PATH);
             self.html.addJS(INPUT_JS_FILE_PATH);
-            self.html.printOut(OUTPUT_HTML_FILE_PATH);
-            webbrowser.open(OUTPUT_HTML_FILE_PATH);
+            self.html.printOut(strOutputHtmlAbsPath);
+            webbrowser.open(strOutputHtmlAbsPath);
     pass
 

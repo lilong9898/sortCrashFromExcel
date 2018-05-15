@@ -20,7 +20,7 @@ OUTPUT_HTML_LINK_TABLE_COL_NUMBER = 10;
 OUTPUT_TMP_DIR_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmpDir");
 
 # 输出的文件：html输出的文件名，为了在命令行中使用，这里用绝对路径
-OUTPUT_HTML_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmp.html");
+# OUTPUT_HTML_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmp.html");
 
 # html空格符
 HTML_TAG_SPACE = "&nbsp;";

@@ -157,7 +157,12 @@ def sortCrashes(strXlsPath, *args):
             webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0]), str(objCrash.order));
 
     # 打印到浏览器
-    webOutput.printToBrowser(totalCrashes, SAME_CAUSE_LIST, OTHER_CAUSE);
+    # 确定html输出路径，与输入的excel一样名字和路径
+    strHtmlDir = os.path.split(strXlsPath)[0];
+    strHtmlName = os.path.splitext(os.path.split(strXlsPath)[1])[0];
+    strHtmlExt = "html";
+    strHtmlOutputAbsPath = strHtmlDir + os.sep + strHtmlName + "." + strHtmlExt;
+    webOutput.printToBrowser(strHtmlOutputAbsPath, totalCrashes, SAME_CAUSE_LIST, OTHER_CAUSE);
 
     # 清除临时文件夹
     shutil.rmtree(OUTPUT_TMP_DIR_PATH);
