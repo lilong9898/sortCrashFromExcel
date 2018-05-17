@@ -21,7 +21,7 @@ tags = ['html', 'body', 'head', 'link', 'meta', 'div', 'p', 'form', 'legend',
         'input', 'select', 'span', 'b', 'i', 'option', 'img', 'script',
         'table', 'tr', 'td', 'th', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'fieldset', 'a', 'title', 'body', 'head', 'title', 'script', 'br', 'table',
-        'ul', 'li', 'ol', 'button']
+        'ul', 'li', 'ol', 'button', 'style']
 
 selfClose = ['input', 'img', 'link', 'br']
 
@@ -130,10 +130,22 @@ class PyH(Tag):
         return self
 
     def addJS(self, *arg):
-        for f in arg: self.body += script(type='text/javascript', src=f)
+        # for f in arg: self.body += script(type='text/javascript', src=f)
+        # js文件内容被提取出来写入html的内部脚本，以便别人也能用
+        for jsFileAbsPath in arg:
+            with open(jsFileAbsPath, "r") as jsFile:
+                jsFileStr = jsFile.read()
+                jsFile.close()
+                self.head += script(jsFileStr);
 
     def addCSS(self, *arg):
-        for f in arg: self.body += link(rel='stylesheet', type='text/css', href=f)
+        # for f in arg: self.body += link(rel='stylesheet', type='text/css', href=f)
+        # css文件内容被提取出来写入html的内部样式表，以便别人也能用
+        for cssFileAbsPath in arg:
+            with open(cssFileAbsPath, "r") as cssFile:
+                cssFileStr = cssFile.read()
+                cssFile.close()
+                self.head += style(cssFileStr);
 
     def printOut(self,file=''):
         if file: f = open(file, 'w')
