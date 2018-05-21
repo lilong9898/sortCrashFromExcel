@@ -13,16 +13,16 @@ import random;
 EXCLUDE_MSGS = (
     # 自主抛出的异常，不会导致崩溃
     "DEBUGt_CRASH",
-    # "ReaderJobService",
+    "android.content.res.Resources$NotFoundException",
 );
 
 #------------------------崩溃日期过滤--------------------------------
 # 需要过滤掉的日期，此日期前的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_BEFORE = ""
-EXCLUDE_DATE_BEFORE = "20180516";
+EXCLUDE_DATE_BEFORE = "20180521";
 # 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_AFTER = ""
-EXCLUDE_DATE_AFTER = "20180516";
+EXCLUDE_DATE_AFTER = "20180521";
 
 #-----------------------版本名过滤------------------------------------
 # 除此之外的版本名会被过滤掉，不写为不过滤

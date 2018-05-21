@@ -2,6 +2,7 @@
 *.pyc
 */venv
 */.idea
+.idea/*
 *.xls
 *.html
 *.txt

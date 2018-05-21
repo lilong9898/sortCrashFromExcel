@@ -14,6 +14,8 @@ SAME_CAUSE_LIST = [
     CrashSameCause("android.content.res.Resources$NotFoundException"),
     CrashSameCause("java.lang.ClassNotFoundException"),
     CrashSameCause("java.lang.NoClassDefFoundError"),
+    CrashSameCause("java.lang.IndexOutOfBoundsException: setSpan (0 ... 14) ends beyond length 4"),
+    CrashSameCause("java.lang.IndexOutOfBoundsException: Invalid index"),
 ];
 # 不关注的都归类到others
 OTHER_CAUSE = CrashSameCause();
