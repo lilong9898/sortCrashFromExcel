@@ -144,6 +144,9 @@ class Crash:
             trimmedCrashStr = re.sub(r"\[at 0x[0-9a-z]+\]", "[at 0x*]", trimmedCrashStr);
             # 将pc xxxxxx替换成pc *
             trimmedCrashStr = re.sub(r"pc [0-9a-z]+ ", "pc * ", trimmedCrashStr);
+            # 将Invalid Index x, size is换成Invalid Index *, size is
+            trimmedCrashStr = re.sub(r"Invalid index [0-9]+, size is", "Invalid index *, size is", trimmedCrashStr);
+            
             return trimmedCrashStr;
     pass
 
