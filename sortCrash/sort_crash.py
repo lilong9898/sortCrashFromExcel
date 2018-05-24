@@ -11,10 +11,8 @@ from web import *
 # 关注哪些cause进行分类统计
 SAME_CAUSE_LIST = [
     CrashSameCause("com.zhangyue.common.xeonPush.services.ReaderJobService"),
-    CrashSameCause("android.content.res.Resources$NotFoundException"),
     CrashSameCause("java.lang.ClassNotFoundException"),
     CrashSameCause("java.lang.NoClassDefFoundError"),
-    CrashSameCause("java.lang.IndexOutOfBoundsException: setSpan (0 ... 14) ends beyond length 4"),
     CrashSameCause("java.lang.IndexOutOfBoundsException: Invalid index"),
 ];
 # 不关注的都归类到others
