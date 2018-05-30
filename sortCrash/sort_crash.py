@@ -146,7 +146,11 @@ def sortCrashes(strXlsPath, *args):
         webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order), objCrash.getDictUniqueVersions());
         webOutput.writeUserStats(objCrash.getUserStats(), str(objCrash.order));
         webOutput.writeCrashDateStats(objCrash.getCrashDateStats(), str(objCrash.order));
-        webOutput.writeCrashDateHourStats(objCrash.getCrashDateHourStats(), str(objCrash.order));
+        # 可以输出柱状图了，就不输出文字版的小时崩溃信息了
+        # webOutput.writeCrashDateHourStats(objCrash.getCrashDateHourStats(), str(objCrash.order));
+        # 必须调一下getCrashDateHourStats方法以准备好数据
+        objCrash.getCrashDateHourStats();
+        webOutput.writeCrashDateHourSvgHistogram(objCrash.getCrashDateHourStatsForHistogram(), str(objCrash.order));
 
         # 打印crash内容
         # 未提供mappingFile，不进行retrace，直接打印每个错误文件中的内容

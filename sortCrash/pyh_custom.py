@@ -21,9 +21,9 @@ tags = ['html', 'body', 'head', 'link', 'meta', 'div', 'p', 'form', 'legend',
         'input', 'select', 'span', 'b', 'i', 'option', 'img', 'script',
         'table', 'tr', 'td', 'th', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'fieldset', 'a', 'title', 'body', 'head', 'title', 'script', 'br', 'table',
-        'ul', 'li', 'ol', 'button', 'style']
+        'ul', 'li', 'ol', 'button', 'style', 'svg', 'line', 'text']
 
-selfClose = ['input', 'img', 'link', 'br']
+selfClose = ['input', 'img', 'link', 'br', 'line']
 
 class Tag(list):
     tagname = ''

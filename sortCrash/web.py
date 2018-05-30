@@ -164,6 +164,37 @@ class WebOutput:
             self.curCrashDiv << p(strCrashDateHourStats, cl="classCrashDateHourStats", hidden="hidden");
     pass
 
+    def writeCrashDateHourSvgHistogram(self, kvListCrashDateHourStatsForHistogram, strCrashOrder):
+        svgWidth = (len(kvListCrashDateHourStatsForHistogram) + 1) * CRASH_DATE_HOUR_SVG_IMAGE_PER_HOUR_WIDTH;
+        svgHistogram = svg(style="width:{0};height:{1};background:rgb(240,240,240);".format(svgWidth, CRASH_DATE_HOUR_SVG_HEIGHT));
+        xPos = CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_LEFT;
+        sortedListByCount = sorted(kvListCrashDateHourStatsForHistogram, key=lambda kv:kv[1].count, reverse=True);
+        maxCrashCountPerHour = sortedListByCount[0][1].count;
+
+        for strCrashDateHour, objCrashDateHour in kvListCrashDateHourStatsForHistogram:
+            timeTextLeftPos = xPos;
+            timeTextTopPos = CRASH_DATE_HOUR_SVG_IMAGE_PART_HEIGHT + CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_TOP + CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_BOTTOM;
+            lineLeftPos = xPos + 5;
+            countTextLeftPos = xPos - 5;
+
+            # 绘制时间文字
+            svgHistogram << text(strCrashDateHour, x="{0}".format(timeTextLeftPos), y="{0}".format(timeTextTopPos), fill="black", transform="rotate(90 {0} {1})".format(timeTextLeftPos, timeTextTopPos));
+
+            # 绘制柱子
+            lineHeight = round(objCrashDateHour.count * 1.0 / maxCrashCountPerHour * CRASH_DATE_HOUR_SVG_IMAGE_PART_HEIGHT);
+            lineTopPos = CRASH_DATE_HOUR_SVG_IMAGE_PART_HEIGHT - lineHeight + CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_TOP;
+            svgHistogram << line(x1="{0}".format(lineLeftPos), y1="{0}".format(CRASH_DATE_HOUR_SVG_IMAGE_PART_HEIGHT + CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_TOP), x2="{0}".format(lineLeftPos), y2="{0}".format(lineTopPos), style="stroke:rgb(200, 200, 200);stroke-width:20")
+
+            # 绘制柱子上的次数文字
+            svgHistogram << text(str(objCrashDateHour.count), x=str(countTextLeftPos), y="{0}".format(lineTopPos - 5));
+            xPos = xPos + CRASH_DATE_HOUR_SVG_IMAGE_PER_HOUR_WIDTH;
+
+        svgDiv = div(cl="classCrashDateHourStats", hidden="hidden", style="overflow:auto");
+        svgDiv << svgHistogram;
+
+        self.curCrashDiv << svgDiv;
+    pass
+
     def writeCrashMessage(self, strCrashMessage, strCrashOrder):
         strCrashMessage = re.sub(r"\n", "<br/>", strCrashMessage);
         strCrashMessage = re.sub(r"\t", HTML_TAG_SPACE * 4, strCrashMessage);

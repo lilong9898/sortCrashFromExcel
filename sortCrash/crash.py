@@ -270,6 +270,13 @@ class Crash:
         return strCrashDateHourStats;
     pass
 
+    # 获取供svg柱状图使用的崩溃日期小时统计信息，需在getCrashDateHourStats方法被调用之后调用
+    def getCrashDateHourStatsForHistogram(self):
+        # 崩溃的小时时间-崩溃信息的key value pair按崩溃的小时时间，从小到大排序
+        listCrashDateHourKVs = sorted(self.dictUniqueCrashDateHours.items(), key=lambda kv: kv[0], reverse=False);
+        return listCrashDateHourKVs;
+    pass
+
     # 打印crash比例统计信息
     def getCrashRatioStats(self, totalCrashCount):
         strCrashRatioStats = "------------------crash {0}, {1} of {2}, {3}%------------------------------".format(self.order, self.count, totalCrashCount, str(round(100.0 * self.count / totalCrashCount)));

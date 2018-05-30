@@ -22,6 +22,24 @@ OUTPUT_TMP_DIR_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.se
 # 输出的文件：html输出的文件名，为了在命令行中使用，这里用绝对路径
 # OUTPUT_HTML_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmp.html");
 
+# 小时统计信息的svg画布高度
+CRASH_DATE_HOUR_SVG_HEIGHT = "550px";
+
+# 小时统计信息的svg画布的图像部分的高度
+CRASH_DATE_HOUR_SVG_IMAGE_PART_HEIGHT = 350;
+
+# 小时统计信息的svg画布的图像部分的顶部留白
+CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_TOP = 30;
+
+# 小时统计信息的svg画布的图像部分的底部留白
+CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_BOTTOM = 10;
+
+# 小时统计信息的svg画布的左侧留白
+CRASH_DATE_HOUR_SVG_IMAGE_PART_MARGIN_LEFT = 30;
+
+# 小时统计信息的svg画布的每小时图像宽度
+CRASH_DATE_HOUR_SVG_IMAGE_PER_HOUR_WIDTH = 50;
+
 # html空格符
 HTML_TAG_SPACE = "&nbsp;";
 
