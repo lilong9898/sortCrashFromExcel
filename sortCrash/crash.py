@@ -146,7 +146,10 @@ class Crash:
             trimmedCrashStr = re.sub(r"pc [0-9a-z]+ ", "pc * ", trimmedCrashStr);
             # 将Invalid Index x, size is换成Invalid Index *, size is
             trimmedCrashStr = re.sub(r"Invalid index [0-9]+, size is", "Invalid index *, size is", trimmedCrashStr);
-            
+            # 紧急情况下，需要把堆栈信息都去掉后再比较，以更好的聚类
+            # trimmedCrashStr = re.sub(r"at .*\n", "", trimmedCrashStr)
+            # 去掉结尾空格
+            trimmedCrashStr = trimmedCrashStr.strip();
             return trimmedCrashStr;
     pass
 
