@@ -39,7 +39,12 @@ def sortCrashes(strXlsPath, *args):
 
     # 提取崩溃日期
     for i in range(len(listStrRowCrashDateTimes)):
-        parsedDateTime = datetime.datetime.strptime(listStrRowCrashDateTimes[i], "%Y-%m-%d %H:%M:%S");
+        try:
+            parsedDateTime = datetime.datetime.strptime(listStrRowCrashDateTimes[i], "%Y-%m-%d %H:%M:%S");
+        except BaseException:
+            # 对于格式错误的日期，用1970-01-01 00:00:00代替，以保证后续流程正确性，无法直接删掉错误数据，会影响数据个数
+            listStrRowCrashDateTimes[i] = "1970-01-01 00:00:00"
+            parsedDateTime = datetime.datetime.strptime(listStrRowCrashDateTimes[i], "%Y-%m-%d %H:%M:%S");
         listStrRowCrashDates.append(datetime.datetime.strftime(parsedDateTime, "%Y-%m-%d"));
 
     # 存储崩溃信息的临时文件
