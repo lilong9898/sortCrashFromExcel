@@ -12,24 +12,24 @@ import random;
 # 需要过滤掉的崩溃信息，包含下面字符串的就算
 EXCLUDE_MSGS = (
     # 自主抛出的异常，不会导致崩溃
-    "DEBUGt_CRASH",
     "android.content.res.Resources$NotFoundException",
+    "DEBUGt_CRASH",
 );
 
 #------------------------崩溃日期过滤--------------------------------
 # 需要过滤掉的日期，此日期前的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_BEFORE = ""
-# EXCLUDE_DATE_BEFORE = "20180529";
+EXCLUDE_DATE_BEFORE = "20180601";
 # 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
 EXCLUDE_DATE_AFTER = ""
-# EXCLUDE_DATE_AFTER = "20180529";
+EXCLUDE_DATE_AFTER = "20180612";
 
 #-----------------------版本名过滤------------------------------------
 # 除此之外的版本名会被过滤掉，不写为不过滤
 INCLUDE_VERSION_NAMES = ();
 # 形式：x.x.x.yyyyMMdd
-INCLUDE_VERSION_NAMES = ("6.2.1.20180521",);
 # INCLUDE_VERSION_NAMES = ("6.1.9.20180202","6.1.9.20180307",);
+INCLUDE_VERSION_NAMES = ("6.2.0.20180522");
 
 #-----------------------同一用户同一时间（指年月日时分秒都一样）的多条崩溃，只取其中一条-------------------
 # 是否开启这个功能
