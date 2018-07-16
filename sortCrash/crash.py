@@ -156,7 +156,7 @@ class Crash:
 
     # 错误信息的字符串写入文件
     def writeTrimmedCrashStr2File(self, fileName, content):
-        fileCrashTrimmed = open(fileName, 'w');
+        fileCrashTrimmed = open(fileName, 'w',encoding='utf-8');
         fileCrashTrimmed.write(content);
         fileCrashTrimmed.close();
         return fileCrashTrimmed;
