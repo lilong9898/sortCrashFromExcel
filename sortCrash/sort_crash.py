@@ -163,7 +163,7 @@ def sortCrashes(strXlsPath, *args):
             webOutput.writeCrashMessage(objCrash.getUnRetracedCrashMessage(), str(objCrash.order));
         # 提供了mappingFile，即args[0]，打印retrace后的结果
         else:
-            webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0]), str(objCrash.order));
+            webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0], args[1]), str(objCrash.order));
 
     # 打印到浏览器
     # 确定html输出路径，与输入的excel一样名字和路径
@@ -180,11 +180,10 @@ pass
 
 # 无输入参数，使用test.xls
 if len(sys.argv) == 1:
-
     sortCrashes(INPUT_TEST_XLS_PATH);
 # 无retrace
 elif len(sys.argv) == 2:
     sortCrashes(sys.argv[1]);
-# 有retrace
-elif len(sys.argv) == 3:
-    sortCrashes(sys.argv[1], sys.argv[2]);
+# 有retrace，sys.argv[2]一定是主工程的mapping文件，后续参数是不定数量的插件的mapping文件，合在一个list里表示
+elif len(sys.argv) >= 3:
+    sortCrashes(sys.argv[1], sys.argv[2], sys.argv[3:]);

@@ -298,10 +298,24 @@ class Crash:
     pass
 
     # 打印经retrace后的crash内容
-    def getRetracedCrashMessage(self, strMappingFilePath):
-        commands = ["retrace", os.path.abspath(strMappingFilePath), os.path.abspath(self.fileCrashTrimmed.name)];
+    def getRetracedCrashMessage(self, strMainProjectMappingFilePath, strTuplePluginMappingFilePath):
+        fileCrashTrimmedAbsPath = os.path.abspath(self.fileCrashTrimmed.name);
+        commands = ["retrace", os.path.abspath(strMainProjectMappingFilePath), fileCrashTrimmedAbsPath];
         byteResult = subprocess.check_output(commands);
         strResult = byteResult.decode();
+
+        with open(fileCrashTrimmedAbsPath, "w") as f:
+            f.write(strResult);
+            f.close();
+
+        for strPluginMappingFilePath in strTuplePluginMappingFilePath:
+            commands = ["retrace", os.path.abspath(strPluginMappingFilePath), fileCrashTrimmedAbsPath];
+            byteResult = subprocess.check_output(commands)
+            strResult = byteResult.decode();
+            with open(fileCrashTrimmedAbsPath, "w") as f:
+                f.write(strResult);
+                f.close();
+
         # retrace程序会把换行和制表符又替换回字面的"\n"和"\t"，所以这里要再替换回来
         strResult = re.sub(r"\\n", "\n", strResult);
         strResult = re.sub(r"\\t", "\t", strResult);
