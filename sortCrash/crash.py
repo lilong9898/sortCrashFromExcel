@@ -9,7 +9,7 @@ from crash_date import *;
 from crash_date_hour import *;
 from version import *;
 from user import *;
-from chart import *;
+from config import CRASH_SOURCE_PLUGINS;
 
 # 这个类代表一系列stack trace相同的错误信息，是错误统计的基本单位
 class Crash:
@@ -51,6 +51,18 @@ class Crash:
         # 错误信息经修正后的字符串，写入的文件的路径
         self.fileCrashTrimmed = self.writeTrimmedCrashStr2File(fileName, self.strCrashTrimmed);
 
+        # 本crash属于主工程的crash，还是插件的，是哪个插件的
+        self.source = "主工程";
+        for crashSource in CRASH_SOURCE_PLUGINS.keys():
+            crashSourceKeyWords = CRASH_SOURCE_PLUGINS[crashSource];
+            hit = False;
+            for keyWord in crashSourceKeyWords:
+                if keyWord in self.strCrashTrimmed:
+                    hit = True;
+                    break;
+            if hit:
+                self.source = crashSource;
+                break;
     pass
 
 
@@ -282,7 +294,7 @@ class Crash:
 
     # 打印crash比例统计信息
     def getCrashRatioStats(self, totalCrashCount):
-        strCrashRatioStats = "------------------crash {0}, {1} of {2}, {3}%------------------------------".format(self.order, self.count, totalCrashCount, str(round(100.0 * self.count / totalCrashCount)));
+        strCrashRatioStats = "------------------crash {0}, {1} of {2}, {3}%------------------------------{4}".format(self.order, self.count, totalCrashCount, str(round(100.0 * self.count / totalCrashCount)), self.source);
         return strCrashRatioStats;
     pass
 

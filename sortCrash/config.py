@@ -93,3 +93,27 @@ EXCEL_COL_INDEX_INTERNAL_APP_VERSION = 15;
 
 # excel表中上传时间所在列序号
 EXCEL_COL_INDEX_UPLOAD_TIME = 16;
+
+# 识别崩溃信息的来源，是否为插件的，是哪个插件的，是通过对照崩溃信息和下面表中的关键词来确定的
+CRASH_SOURCE_PLUGINS = {
+    "插件search":
+        ("pluginweb_search", "com.zhangyue.iReader.search", "com.zhangyue.iReader.common.webservice"),
+    "插件bookdetail":
+        ("pluginwebdiff_bookdetail", "com.zhangyue.iReader.bookDetail", "com.zhangyue.fastjson"),
+    "插件bookshelfcard":
+        ("pluginwebdiff_bookshelfcard", "com.zhangyue.digest", "com.zhangyue.subscribe"),
+    "插件bookstore":
+        ("pluginwebdiff_bookstore", "com.zhangyue.bookstore", "com.zhangyue.itemview", "com.zhangyue.scrollheader", "com.zhangyue.timer"),
+    "插件bookstore2":
+        ("pluginwebdiff_bookstore2", "com.zhangyue.bookstore2"),
+    "插件bookstore3":
+        ("pluginwebdiff_bookstore3", "com.zhangyue.iReader.common"),
+    "插件common":
+        ("pluginwebdiff_common", "com.zhangyue.aac", "com.zhangyue.common"),
+    "插件config":
+        ("pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config"),
+    "插件mine":
+        ("pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine"),
+    "插件pdf":
+        ("pluginwebdiff_pdf", "com.zhangyue.iReader.PDF", "com.zhangyue.iReader.PDF2"),
+}
