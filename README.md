@@ -7,12 +7,12 @@
 ### 运行：
 #### 过滤：
 - 运行filter_crash.py来过滤输入的崩溃统计excel表，假设名字为xxx.xls，输出是在其同级目录生成的一个叫xxx_filtered.xls的新表　　
-<br>```python3 filter_crash.py xxx.xls```
+<br>```python3 filter_crash.py(相对或绝对路径) xxx.xls(必须是绝对路径)```
 #### 统计：
 - 运行sort_crash.py来统计输入的崩溃统计excel表，输出是一个网页（存储在输入的excel表的同级目录下，名字是xxx_filtered.html），会自动打开
-<br>```python3 sort_crash.py xxx_filtered.xls```　　
+<br>```python3 sort_crash.py(相对或绝对路径) xxx_filtered.xls(必须是绝对路径)```　　
 - 如果需要反混淆，则可以
-<br>```python3 sort_crash.py xxx_filtered.xls mapping1.txt mapping2.txt ...(可以输入多个mapping文件，方便插件崩溃的retrace)```
+<br>```python3 sort_crash.py(相对或绝对路径) xxx_filtered.xls(必须是绝对路径) mapping1.txt mapping2.txt ...(必须是绝对路径，可以输入多个mapping文件，方便插件崩溃的retrace)```
 ### 配置运行参数：
 - 目前所有过滤和统计功能的参数都不支持从外部输入，请在filter_crash.py和sort_crash.py源码中按照注释修改后再运行
 ### 运行结果:
