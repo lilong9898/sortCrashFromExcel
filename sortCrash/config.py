@@ -4,9 +4,6 @@ import os
 import sys
 
 # 确定的各种所需文件路径：
-# 输入的文件：test.xls的路径
-INPUT_TEST_XLS_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "test.xls");
-
 # 输入的文件：输出的网页所用的js脚本的路径
 INPUT_JS_FILE_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "web.js");
 

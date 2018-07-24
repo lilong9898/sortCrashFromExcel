@@ -19,11 +19,11 @@ SAME_CAUSE_LIST = [
 OTHER_CAUSE = CrashSameCause();
 
 # 打印出去重和retrace之后的崩溃信息，mappingFile是可选参数，如果不传，则不进行retrace
+# strXlsPath必须是绝对路径
 def sortCrashes(strXlsPath, *args):
 
     # excel工作库
     xlsFile = xlrd.open_workbook(strXlsPath);
-
     # excel工作表
     xlsSheet = xlsFile.sheets()[0];
 
@@ -37,6 +37,11 @@ def sortCrashes(strXlsPath, *args):
     listStrRowUsers = xlsSheet.col_values(EXCEL_COL_INDEX_I_ACCOUNT);
     listStrRowCrashDates = [];
 
+    if len(listStrRowCrashes) == 0:
+        print("这是一张空表，结束");
+        exit(0);
+        
+    # 如果是
     # 提取崩溃日期
     for i in range(len(listStrRowCrashDateTimes)):
         try:
@@ -180,7 +185,8 @@ pass
 
 # 无输入参数，使用test.xls
 if len(sys.argv) == 1:
-    sortCrashes(INPUT_TEST_XLS_PATH);
+    print("需至少输入1个参数：原始崩溃excel表")
+    exit(0)
 # 无retrace
 elif len(sys.argv) == 2:
     sortCrashes(sys.argv[1]);
