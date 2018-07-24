@@ -168,7 +168,7 @@ class Crash:
 
     # 错误信息的字符串写入文件
     def writeTrimmedCrashStr2File(self, fileName, content):
-        fileCrashTrimmed = open(fileName, 'w');
+        fileCrashTrimmed = open(fileName, 'w',encoding='utf-8');
         fileCrashTrimmed.write(content);
         fileCrashTrimmed.close();
         return fileCrashTrimmed;
@@ -305,7 +305,7 @@ class Crash:
 
     # 打印未经retrace的crash内容
     def getUnRetracedCrashMessage(self):
-        with open(self.fileCrashTrimmed.name, "r") as f:
+        with open(self.fileCrashTrimmed.name, "r",encoding='utf-8') as f:
             return f.read();
     pass
 
