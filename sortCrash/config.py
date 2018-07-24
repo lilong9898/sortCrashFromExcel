@@ -5,19 +5,19 @@ import sys
 
 # 确定的各种所需文件路径：
 # 输入的文件：test.xls的路径
-INPUT_TEST_XLS_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "test.xls");
+INPUT_TEST_XLS_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "test.xls");
 
 # 输入的文件：输出的网页所用的js脚本的路径
-INPUT_JS_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "web.js");
+INPUT_JS_FILE_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "web.js");
 
 # 输入的文件：输出的网页所用的css样式表路径
-INPUT_CSS_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "web.css");
+INPUT_CSS_FILE_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "web.css");
 
 # 网页上crash链接的表格的列数
 OUTPUT_HTML_LINK_TABLE_COL_NUMBER = 10;
 
 # 输出的文件：去重后的crash信息暂时存储的目录，为了在命令行中使用，这里用绝对路径
-OUTPUT_TMP_DIR_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmpDir");
+OUTPUT_TMP_DIR_PATH = os.path.realpath(os.path.abspath(os.path.dirname(sys.argv[0])) + os.path.sep + "tmpDir");
 
 # 输出的文件：html输出的文件名，为了在命令行中使用，这里用绝对路径
 # OUTPUT_HTML_FILE_PATH = os.path.realpath(os.path.dirname(sys.argv[0]) + os.path.sep + "tmp.html");
