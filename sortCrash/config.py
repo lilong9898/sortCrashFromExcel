@@ -2,6 +2,8 @@
 #coding=utf-8
 import os
 import sys
+from crash_same_cause import *
+from crash_same_source import *
 
 # 确定的各种所需文件路径：
 # 输入的文件：输出的网页所用的js脚本的路径
@@ -91,26 +93,31 @@ EXCEL_COL_INDEX_INTERNAL_APP_VERSION = 15;
 # excel表中上传时间所在列序号
 EXCEL_COL_INDEX_UPLOAD_TIME = 16;
 
+# 关注哪些cause进行分类统计
+# 这个类代表由相同原因引起的一类crash的数量统计，"相同原因"看crash msg中是否包含同样的cause字符串
+SAME_CAUSE_LIST = [
+    CrashSameCause("com.zhangyue.common.xeonPush.services.ReaderJobService"),
+    CrashSameCause("java.lang.ClassNotFoundException"),
+    CrashSameCause("java.lang.NoClassDefFoundError"),
+    CrashSameCause("java.lang.IndexOutOfBoundsException: Invalid index"),
+];
+# 不关注的都归类到others
+OTHER_CAUSE = CrashSameCause("others");
+
+# 关注哪些source进行分类统计
 # 识别崩溃信息的来源，是否为插件的，是哪个插件的，是通过对照崩溃信息和下面表中的关键词来确定的
-CRASH_SOURCE_PLUGINS = {
-    "插件search":
-        ("pluginweb_search", "com.zhangyue.iReader.search", "com.zhangyue.iReader.common.webservice"),
-    "插件bookdetail":
-        ("pluginwebdiff_bookdetail", "com.zhangyue.iReader.bookDetail", "com.zhangyue.fastjson"),
-    "插件bookshelfcard":
-        ("pluginwebdiff_bookshelfcard", "com.zhangyue.digest", "com.zhangyue.subscribe"),
-    "插件bookstore":
-        ("pluginwebdiff_bookstore", "com.zhangyue.bookstore", "com.zhangyue.itemview", "com.zhangyue.scrollheader", "com.zhangyue.timer"),
-    "插件bookstore2":
-        ("pluginwebdiff_bookstore2", "com.zhangyue.bookstore2"),
-    "插件bookstore3":
-        ("pluginwebdiff_bookstore3", "com.zhangyue.iReader.common"),
-    "插件common":
-        ("pluginwebdiff_common", "com.zhangyue.aac", "com.zhangyue.common"),
-    "插件config":
-        ("pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config"),
-    "插件mine":
-        ("pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine"),
-    "插件pdf":
-        ("pluginwebdiff_pdf", "com.zhangyue.iReader.PDF", "com.zhangyue.iReader.PDF2"),
-}
+SAME_SOURCE_LIST = [
+    CrashSameSource("插件search", ["pluginweb_search", "com.zhangyue.iReader.search", "com.zhangyue.iReader.common.webservice"]),
+    CrashSameSource("插件bookdetail", ["pluginwebdiff_bookdetail", "com.zhangyue.iReader.bookDetail", "com.zhangyue.fastjson"]),
+    CrashSameSource("插件bookshelfcard", ["pluginwebdiff_bookshelfcard", "com.zhangyue.digest", "com.zhangyue.subscribe"]),
+    CrashSameSource("插件bookstore", ["pluginwebdiff_bookstore", "com.zhangyue.bookstore", "com.zhangyue.itemview", "com.zhangyue.scrollheader", "com.zhangyue.timer"]),
+    CrashSameSource("插件bookstore2", ["pluginwebdiff_bookstore2", "com.zhangyue.bookstore2"]),
+    CrashSameSource("插件bookstore3", ["pluginwebdiff_bookstore3", "com.zhangyue.iReader.common"]),
+    CrashSameSource("插件common", ["pluginwebdiff_common", "com.zhangyue.aac", "com.zhangyue.common"]),
+    CrashSameSource("插件config", ["pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config"]),
+    CrashSameSource("插件mine", ["pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine"]),
+    CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF", "com.zhangyue.iReader.PDF2"]),
+];
+
+# 不关注的都归类到"主工程"
+OTHER_SOURCE = CrashSameSource("主工程", []);

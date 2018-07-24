@@ -5,18 +5,10 @@ import xlrd
 import shutil
 import progressbar
 from crash import *
+from config import *
 from crash_same_cause import *
+from crash_same_source import *
 from web import *
-
-# 关注哪些cause进行分类统计
-SAME_CAUSE_LIST = [
-    CrashSameCause("com.zhangyue.common.xeonPush.services.ReaderJobService"),
-    CrashSameCause("java.lang.ClassNotFoundException"),
-    CrashSameCause("java.lang.NoClassDefFoundError"),
-    CrashSameCause("java.lang.IndexOutOfBoundsException: Invalid index"),
-];
-# 不关注的都归类到others
-OTHER_CAUSE = CrashSameCause();
 
 # 打印出去重和retrace之后的崩溃信息，mappingFile是可选参数，如果不传，则不进行retrace
 # strXlsPath必须是绝对路径
@@ -134,23 +126,49 @@ def sortCrashes(strXlsPath, *args):
         keyCrash = uniqueCrashKV[0];
         objCrash = uniqueCrashKV[1];
 
+        # 提供了mappingFile，需要进行retrace，将结果写回到crashMesage里
+        # 这个操作要赶在向网页做任何输出之前，以免影响准确性
+        if len(args) > 0:
+            strRetracedCrashMessage = objCrash.getRetracedCrashMessage(args[0], args[1]);
+            objCrash.setCrashMessage(strRetracedCrashMessage);
+
+        #-----------------------统计same cause-------------------------------------------------
         isInSameCauseList = False;
         # 统计本crash是否符合关注的same cause
         for crashSameCause in SAME_CAUSE_LIST:
             # 某个crash属于我们关注的某个same cause
-            if crashSameCause.strCause in objCrash.strCrash:
+            if crashSameCause.strCause in objCrash.getCrashMessage():
                 crashSameCause.crashTypeCount = crashSameCause.crashTypeCount + 1;
                 crashSameCause.crashTimeCount = crashSameCause.crashTimeCount + objCrash.count;
                 isInSameCauseList = True;
                 break;
-
         # 不在的话属于其它类的cause
         if not isInSameCauseList:
             OTHER_CAUSE.crashTypeCount = OTHER_CAUSE.crashTypeCount + 1;
             OTHER_CAUSE.crashTimeCount = OTHER_CAUSE.crashTimeCount + objCrash.count;
 
-        webOutput.beginCurCrash(str(objCrash.order), objCrash.getCrashRatioPercentageOnly(totalCrashes));
+        #-----------------------统计same source-------------------------------------------------
+        isInSameSourceList = False;
+        # 统计本crash是否符合关注的same source
+        for crashSameSource in SAME_SOURCE_LIST:
+            # 某个crash属于我们关注的某个same source
+            for sameSourceKeyword in crashSameSource.strListSourceKeywords:
+                if sameSourceKeyword in objCrash.getCrashMessage():
+                    crashSameSource.crashTypeCount = crashSameSource.crashTypeCount + 1;
+                    crashSameSource.crashTimeCount = crashSameSource.crashTimeCount + objCrash.count;
+                    isInSameSourceList = True;
+                    objCrash.setSource(crashSameSource.strSource);
+                    break;
+            if isInSameSourceList:
+                break;
+        # 不在的话属于其它类的source
+        if not isInSameSourceList:
+            OTHER_SOURCE.crashTypeCount = OTHER_SOURCE.crashTypeCount + 1;
+            OTHER_SOURCE.crashTimeCount = OTHER_SOURCE.crashTimeCount + objCrash.count;
+            objCrash.setSource(OTHER_SOURCE.strSource);
 
+        # 开始输出到网页
+        webOutput.beginCurCrash(str(objCrash.order), objCrash.getCrashRatioPercentageOnly(totalCrashes));
         webOutput.writeCrashRatioStats(objCrash.getCrashRatioStats(totalCrashes), str(objCrash.order));
         webOutput.writeEnvStats(objCrash.getEnvStats(), str(objCrash.order));
         webOutput.writeVersionStats(objCrash.getVersionStats(), objCrash.getVersionNamesSet(), str(objCrash.order), objCrash.getDictUniqueVersions());
@@ -162,13 +180,9 @@ def sortCrashes(strXlsPath, *args):
         objCrash.getCrashDateHourStats();
         webOutput.writeCrashDateHourSvgHistogram(objCrash.getCrashDateHourStatsForHistogram(), str(objCrash.order));
 
-        # 打印crash内容
-        # 未提供mappingFile，不进行retrace，直接打印每个错误文件中的内容
-        if len(args) == 0:
-            webOutput.writeCrashMessage(objCrash.getUnRetracedCrashMessage(), str(objCrash.order));
-        # 提供了mappingFile，即args[0]，打印retrace后的结果
-        else:
-            webOutput.writeCrashMessage(objCrash.getRetracedCrashMessage(args[0], args[1]), str(objCrash.order));
+        # 此种崩溃的信息输出到网页
+        webOutput.writeCrashMessage(objCrash.getCrashMessage(), str(objCrash.order));
+
 
     # 打印到浏览器
     # 确定html输出路径，与输入的excel一样名字和路径
@@ -176,7 +190,7 @@ def sortCrashes(strXlsPath, *args):
     strHtmlName = os.path.splitext(os.path.split(strXlsPath)[1])[0];
     strHtmlExt = "html";
     strHtmlOutputAbsPath = strHtmlDir + os.sep + strHtmlName + "." + strHtmlExt;
-    webOutput.printToBrowser(strHtmlOutputAbsPath, totalCrashes, SAME_CAUSE_LIST, OTHER_CAUSE);
+    webOutput.printToBrowser(strHtmlOutputAbsPath, totalCrashes, SAME_CAUSE_LIST, OTHER_CAUSE, SAME_SOURCE_LIST, OTHER_SOURCE);
 
     # 清除临时文件夹
     shutil.rmtree(OUTPUT_TMP_DIR_PATH);

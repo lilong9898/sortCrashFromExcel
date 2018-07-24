@@ -4,7 +4,7 @@
 # 这个类代表由相同原因引起的一类crash的数量统计，"相同原因"看crash msg中是否包含同样的cause字符串
 class CrashSameCause:
 
-    def __init__(self, strCause = "others"):
+    def __init__(self, strCause):
 
         # cause的字符串，凡是crash msg中包含这个cause字符串的，就属于same cause，会对应到本类的一个实例，并更新这个实例中的数据
         self.strCause = strCause;

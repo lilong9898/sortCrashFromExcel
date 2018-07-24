@@ -86,6 +86,8 @@ class WebOutput:
         if(int(strCrashOrder) % OUTPUT_HTML_LINK_TABLE_COL_NUMBER == 1):
             self.navDivRightTableCurRow = tr();
             self.navDivRightTable << self.navDivRightTableCurRow;
+        if strRatioPercentage == "0%":
+            strRatioPercentage = "...";
         anchorLink = a("crash_" + strCrashOrder + " (" + strRatioPercentage + ")", href="#anchor_" + strCrashOrder, id="anchorLink_" + strCrashOrder);
         tableDataAnchorLink = td();
         tableDataAnchorLink << anchorLink;
@@ -202,7 +204,7 @@ class WebOutput:
             self.curCrashDiv << p(strCrashMessage);
     pass
 
-    def printToBrowser(self, strOutputHtmlAbsPath, numTotalCrashes, sameCauseList, otherCause):
+    def printToBrowser(self, strOutputHtmlAbsPath, numTotalCrashes, sameCauseList, otherCause, sameSourceList, otherSource):
         if self.html != None:
             # 写整体versionName复选框
             listUniqueVersionNamesToCrashDivStats = sorted(self.dictUniqueVersionNameToCrashDivStats.items(),
@@ -231,14 +233,35 @@ class WebOutput:
                 strDisplayVersionName = strVersionName;
                 if strVersionName.replace("," , "").strip() == "":
                     strDisplayVersionName = "unknown version";
-                crashCountsStatByVersionName = crashCountsStatByVersionName + strDisplayVersionName + " : " + str(self.dictUniqueVersionNameToCrashCount[strVersionName]) + 30 * HTML_TAG_SPACE;
+                crashCountOfThisVersion = self.dictUniqueVersionNameToCrashCount[strVersionName];
+                crashCountsStatByVersionName = crashCountsStatByVersionName + strDisplayVersionName + " : " + str(crashCountOfThisVersion) + "({0}%)".format(str(round(100.0 * crashCountOfThisVersion / numTotalCrashes))) + 5 * HTML_TAG_SPACE;
 
-            self.statsDiv << h3("totalCrashes : " + str(numTotalCrashes) + 20 * HTML_TAG_SPACE + crashCountsStatByVersionName);
-            self.statsDiv << h3("specific crash type stats :")
+            self.statsDiv << h3("Total Crashes :");
+            self.statsDiv << p(str(numTotalCrashes), style="font-weight:bold")
 
+            self.statsDiv << h3("By VersionName :");
+            self.statsDiv << p(crashCountsStatByVersionName, style="font-weight:bold");
+
+            self.statsDiv << h3("By Keyword :");
             for sameCause in sameCauseList:
-                self.statsDiv << h3(sameCause.toString(numTotalCrashes));
-            self.statsDiv << h3(otherCause.toString(numTotalCrashes));
+                self.statsDiv << p(sameCause.toString(numTotalCrashes), style="font-weight:bold");
+            self.statsDiv << p(otherCause.toString(numTotalCrashes), style="font-weight:bold");
+
+            self.statsDiv << h3("By Sources :");
+            curTable = table();
+            self.statsDiv << curTable;
+            curTr = tr();
+            for index in range(len(sameSourceList)):
+                curTd = td(sameSourceList[index].toString(numTotalCrashes), style="font-weight:bold");
+                curTr << curTd;
+                # 5个一行
+                if (index + 1) % 5 == 0:
+                    curTable << curTr;
+                    curTr = tr();
+
+            curTr = tr();
+            curTr << td(otherSource.toString(numTotalCrashes), style="font-weight:bold");
+            curTable << curTr;
 
             self.html.addCSS(INPUT_CSS_FILE_PATH);
             self.html.addJS(INPUT_JS_FILE_PATH);

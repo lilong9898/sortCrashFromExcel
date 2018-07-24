@@ -2,14 +2,13 @@
 #coding=utf-8
 
 import re
-import os
 import subprocess
 from env import *;
 from crash_date import *;
 from crash_date_hour import *;
 from version import *;
 from user import *;
-from config import CRASH_SOURCE_PLUGINS;
+from config import *;
 
 # 这个类代表一系列stack trace相同的错误信息，是错误统计的基本单位
 class Crash:
@@ -51,18 +50,9 @@ class Crash:
         # 错误信息经修正后的字符串，写入的文件的路径
         self.fileCrashTrimmed = self.writeTrimmedCrashStr2File(fileName, self.strCrashTrimmed);
 
-        # 本crash属于主工程的crash，还是插件的，是哪个插件的
-        self.source = "主工程";
-        for crashSource in CRASH_SOURCE_PLUGINS.keys():
-            crashSourceKeyWords = CRASH_SOURCE_PLUGINS[crashSource];
-            hit = False;
-            for keyWord in crashSourceKeyWords:
-                if keyWord in self.strCrashTrimmed:
-                    hit = True;
-                    break;
-            if hit:
-                self.source = crashSource;
-                break;
+        # 相同的来源引起的一类crash的数量统计，＂来源＂指来自主工程，还是哪个插件
+        self.strSource = "";
+
     pass
 
 
@@ -294,7 +284,7 @@ class Crash:
 
     # 打印crash比例统计信息
     def getCrashRatioStats(self, totalCrashCount):
-        strCrashRatioStats = "------------------crash {0}, {1} of {2}, {3}%------------------------------{4}".format(self.order, self.count, totalCrashCount, str(round(100.0 * self.count / totalCrashCount)), self.source);
+        strCrashRatioStats = "------------------crash {0}, {1} of {2}, {3}%------------------------------{4}".format(self.order, self.count, totalCrashCount, str(round(100.0 * self.count / totalCrashCount)), self.strSource);
         return strCrashRatioStats;
     pass
 
@@ -303,11 +293,18 @@ class Crash:
         return str(round(100.0 * self.count / totalCrashCount)) + "%";
     pass
 
-    # 打印未经retrace的crash内容
-    def getUnRetracedCrashMessage(self):
-        with open(self.fileCrashTrimmed.name, "r",encoding='utf-8') as f:
-            return f.read();
+    # 打印crash内容，如果sort_crash时指定了mapping文件，retrace后的crash内容会写回到这里
+    def getCrashMessage(self):
+        return self.strCrashTrimmed;
     pass
+
+    def setCrashMessage(self, strCrashMsg):
+        self.strCrashTrimmed = strCrashMsg;
+    pass;
+
+    def setSource(self, strSource):
+        self.strSource = strSource;
+    pass;
 
     # 打印经retrace后的crash内容
     def getRetracedCrashMessage(self, strMainProjectMappingFilePath, strTuplePluginMappingFilePath):
@@ -316,7 +313,7 @@ class Crash:
         byteResult = subprocess.check_output(commands);
         strResult = byteResult.decode();
 
-        with open(fileCrashTrimmedAbsPath, "w") as f:
+        with open(fileCrashTrimmedAbsPath, "w", encoding='utf-8') as f:
             f.write(strResult);
             f.close();
 
