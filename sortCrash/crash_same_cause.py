@@ -15,11 +15,14 @@ class CrashSameCause:
         # 这个cause的crash包含多少条
         self.crashTimeCount = 0;
 
+        # 这个cause的crash包含的i号(去重后的)
+        self.iAccountSet = set();
+
     pass;
 
     def toString(self, numTotalCrashes):
         crashTimePercentage = round(100.0 * self.crashTimeCount / numTotalCrashes);
-        return self.strCause + " : " + str(self.crashTimeCount) + " (" + str(crashTimePercentage) + "%)" + "(" + str(self.crashTypeCount) + "types)"
+        return self.strCause + " : " + str(self.crashTimeCount) + " (" + str(crashTimePercentage) + "%)" + "(" + str(self.crashTypeCount) + "types) (" + str(len(self.iAccountSet)) + " users affected)";
     pass;
 
 pass;

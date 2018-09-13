@@ -140,6 +140,8 @@ def sortCrashes(strXlsPath, *args):
             if crashSameCause.strCause in objCrash.getCrashMessage():
                 crashSameCause.crashTypeCount = crashSameCause.crashTypeCount + 1;
                 crashSameCause.crashTimeCount = crashSameCause.crashTimeCount + objCrash.count;
+                for strUserIAccount in objCrash.dictUniqueUsers.keys():
+                    crashSameCause.iAccountSet.add(strUserIAccount);
                 isInSameCauseList = True;
                 break;
         # 不在的话属于其它类的cause
@@ -178,7 +180,7 @@ def sortCrashes(strXlsPath, *args):
         # webOutput.writeCrashDateHourStats(objCrash.getCrashDateHourStats(), str(objCrash.order));
         # 必须调一下getCrashDateHourStats方法以准备好数据
         objCrash.getCrashDateHourStats();
-        webOutput.writeCrashDateHourSvgHistogram(objCrash.getCrashDateHourStatsForHistogram(), str(objCrash.order));
+        # webOutput.writeCrashDateHourSvgHistogram(objCrash.getCrashDateHourStatsForHistogram(), str(objCrash.order));
 
         # 此种崩溃的信息输出到网页
         webOutput.writeCrashMessage(objCrash.getCrashMessage(), str(objCrash.order));
