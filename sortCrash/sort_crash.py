@@ -148,6 +148,8 @@ def sortCrashes(strXlsPath, *args):
         if not isInSameCauseList:
             OTHER_CAUSE.crashTypeCount = OTHER_CAUSE.crashTypeCount + 1;
             OTHER_CAUSE.crashTimeCount = OTHER_CAUSE.crashTimeCount + objCrash.count;
+            for strUserIAccount in objCrash.dictUniqueUsers.keys():
+                OTHER_CAUSE.iAccountSet.add(strUserIAccount);
 
         #-----------------------统计same source-------------------------------------------------
         isInSameSourceList = False;
