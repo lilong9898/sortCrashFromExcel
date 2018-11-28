@@ -181,7 +181,7 @@ def sortCrashes(strXlsPath, *args):
         # 可以输出柱状图了，就不输出文字版的小时崩溃信息了
         # webOutput.writeCrashDateHourStats(objCrash.getCrashDateHourStats(), str(objCrash.order));
         # 必须调一下getCrashDateHourStats方法以准备好数据
-        objCrash.getCrashDateHourStats();
+        # objCrash.getCrashDateHourStats();
         # webOutput.writeCrashDateHourSvgHistogram(objCrash.getCrashDateHourStatsForHistogram(), str(objCrash.order));
 
         # 此种崩溃的信息输出到网页
