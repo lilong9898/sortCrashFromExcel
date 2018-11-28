@@ -128,7 +128,8 @@ def sortCrashes(strXlsPath, *args):
 
         # 提供了mappingFile，需要进行retrace，将结果写回到crashMesage里
         # 这个操作要赶在向网页做任何输出之前，以免影响准确性
-        if len(args) > 0:
+        # 为了节省时间，只对数量属于前十位的崩溃进行retrace
+        if len(args) > 0 and i < 10:
             strRetracedCrashMessage = objCrash.getRetracedCrashMessage(args[0], args[1]);
             objCrash.setCrashMessage(strRetracedCrashMessage);
 
