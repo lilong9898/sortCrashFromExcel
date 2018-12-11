@@ -117,6 +117,8 @@ SAME_SOURCE_LIST = [
     CrashSameSource("插件config", ["pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config"]),
     CrashSameSource("插件mine", ["pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine"]),
     CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF", "com.zhangyue.iReader.PDF2"]),
+    CrashSameSource("插件group", ["pluginwebdiff_group", "com.zhangyue.group"]),
+    CrashSameSource("插件personal", ["pluginwebdiff_personal", "com.zhangyue.personal", "com.zhangyue.player"]),
 ];
 
 # 不关注的都归类到"主工程"
