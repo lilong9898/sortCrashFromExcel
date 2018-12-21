@@ -7,6 +7,7 @@ import xlwt;
 import progressbar;
 import datetime;
 import random;
+import time;
 
 #------------------------崩溃信息过滤-------------------------------
 # 需要过滤掉的崩溃信息，包含下面字符串的就算
@@ -18,15 +19,13 @@ EXCLUDE_MSGS = (
 
 #------------------------崩溃日期过滤--------------------------------
 # 需要过滤掉的日期，此日期前的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
-EXCLUDE_DATE_BEFORE = ""
-EXCLUDE_DATE_BEFORE = "20181206";
-# 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd
+EXCLUDE_DATE_BEFORE = "20181220";
+# 需要过滤掉的日期，此日期后的(不包括这一天)都被过滤掉，日期形式yyyyMMdd，空字符串表示今天
 EXCLUDE_DATE_AFTER = ""
-EXCLUDE_DATE_AFTER = "20181207";
 
 #-----------------------版本名过滤------------------------------------
 # 除此之外的版本名会被过滤掉，不写为不过滤
-INCLUDE_VERSION_NAMES = ("6.2.3.20181030");
+INCLUDE_VERSION_NAMES = ();
 # 形式：x.x.x.yyyyMMdd
 # INCLUDE_VERSION_NAMES = ("6.1.9.20180202","6.1.9.20180307",);
 
@@ -112,8 +111,11 @@ def filterCrash(strXlsPath):
                 break;
 
         # 看看有没有要被过滤掉的日期
-        if EXCLUDE_DATE_BEFORE.strip() != "" and EXCLUDE_DATE_AFTER.strip() != "":
-            includeDates = dateRange(EXCLUDE_DATE_BEFORE.strip(), EXCLUDE_DATE_AFTER.strip());
+        if EXCLUDE_DATE_BEFORE.strip() != "":
+            if EXCLUDE_DATE_AFTER.strip() == "":
+                includeDates = dateRange(EXCLUDE_DATE_BEFORE.strip(), time.strftime("%Y%m%d", time.localtime(time.time())))
+            else:
+                includeDates = dateRange(EXCLUDE_DATE_BEFORE.strip(), EXCLUDE_DATE_AFTER.strip())
             # 表中的日期有可能格式不对，要try except
             try:
                 crashDate = str(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S").date());
@@ -143,11 +145,15 @@ def filterCrash(strXlsPath):
 
             if keyIAccount in dictUniqueIAccountToCrashTimes:
                 # 上一秒的时间字符串
-                strPrevSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") - datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
-                # 这一秒的时间字符串
-                strCurSecond = listStrRowCrashTimes[i];
-                # 下一秒的时间字符串
-                strNextSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") + datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
+                try:
+                    strPrevSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") - datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
+                    # 这一秒的时间字符串
+                    strCurSecond = listStrRowCrashTimes[i];
+                    # 下一秒的时间字符串
+                    strNextSecond = datetime.datetime.strftime(datetime.datetime.strptime(listStrRowCrashTimes[i], "%Y-%m-%d %H:%M:%S") + datetime.timedelta(seconds=1), "%Y-%m-%d %H:%M:%S");
+                except BaseException:
+                    print("problematic time format : " + listStrRowCrashTimes[i] + "@row " + str(i) + ", skip")
+                    skip = True
 
                 # 这个i号的所有崩溃时间
                 strListCrashTimesOfThisIAccount = dictUniqueIAccountToCrashTimes[keyIAccount];

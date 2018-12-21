@@ -107,18 +107,18 @@ OTHER_CAUSE = CrashSameCause("others");
 # 关注哪些source进行分类统计
 # 识别崩溃信息的来源，是否为插件的，是哪个插件的，是通过对照崩溃信息和下面表中的关键词来确定的
 SAME_SOURCE_LIST = [
-    CrashSameSource("插件search", ["pluginweb_search", "com.zhangyue.iReader.search", "com.zhangyue.iReader.common.webservice"]),
-    CrashSameSource("插件bookdetail", ["pluginwebdiff_bookdetail", "com.zhangyue.iReader.bookDetail", "com.zhangyue.fastjson"]),
-    CrashSameSource("插件bookshelfcard", ["pluginwebdiff_bookshelfcard", "com.zhangyue.digest", "com.zhangyue.subscribe"]),
-    CrashSameSource("插件bookstore", ["pluginwebdiff_bookstore", "com.zhangyue.bookstore", "com.zhangyue.itemview", "com.zhangyue.scrollheader", "com.zhangyue.timer"]),
-    CrashSameSource("插件bookstore2", ["pluginwebdiff_bookstore2", "com.zhangyue.bookstore2"]),
-    CrashSameSource("插件bookstore3", ["pluginwebdiff_bookstore3", "com.zhangyue.iReader.common"]),
-    CrashSameSource("插件common", ["pluginwebdiff_common", "com.zhangyue.aac", "com.zhangyue.common"]),
-    CrashSameSource("插件config", ["pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config"]),
-    CrashSameSource("插件mine", ["pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine"]),
-    CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF", "com.zhangyue.iReader.PDF2"]),
-    CrashSameSource("插件group", ["pluginwebdiff_group", "com.zhangyue.group"]),
-    CrashSameSource("插件personal", ["pluginwebdiff_personal", "com.zhangyue.personal", "com.zhangyue.player"]),
+    CrashSameSource("插件search", ["pluginweb_search", "com.zhangyue.iReader.search.", "com.zhangyue.iReader.common.webservice."]),
+    CrashSameSource("插件bookdetail", ["pluginwebdiff_bookdetail", "com.zhangyue.iReader.bookDetail.", "com.zhangyue.fastjson."]),
+    CrashSameSource("插件bookshelfcard", ["pluginwebdiff_bookshelfcard", "com.zhangyue.digest.", "com.zhangyue.subscribe."]),
+    CrashSameSource("插件bookstore", ["pluginwebdiff_bookstore", "com.zhangyue.bookstore.", "com.zhangyue.itemview.", "com.zhangyue.scrollheader.", "com.zhangyue.timer."]),
+    CrashSameSource("插件bookstore2", ["pluginwebdiff_bookstore2", "com.zhangyue.bookstore2."]),
+    CrashSameSource("插件bookstore3", ["pluginwebdiff_bookstore3", "com.zhangyue.iReader.common."]),
+    CrashSameSource("插件common", ["pluginwebdiff_common", "com.zhangyue.aac.", "com.zhangyue.common."]),
+    CrashSameSource("插件config", ["pluginwebdiff_configOppo", "com.zhangyue.iReader.plugin.config."]),
+    CrashSameSource("插件mine", ["pluginwebdiff_mineOppo", "com.zhangyue.iReader.mine."]),
+    CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF.", "com.zhangyue.iReader.PDF2."]),
+    CrashSameSource("插件group", ["pluginwebdiff_group", "com.zhangyue.group."]),
+    CrashSameSource("插件personal", ["pluginwebdiff_personal", "com.zhangyue.personal.", "com.zhangyue.player."]),
 ];
 
 # 不关注的都归类到"主工程"

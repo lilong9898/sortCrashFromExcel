@@ -250,14 +250,13 @@ class WebOutput:
             self.statsDiv << h3("By Sources :");
             curTable = table();
             self.statsDiv << curTable;
-            curTr = tr();
             for index in range(len(sameSourceList)):
+                # 5个一行
+                if (index + 1) % 5 == 1:
+                    curTr = tr();
+                    curTable << curTr;
                 curTd = td(sameSourceList[index].toString(numTotalCrashes), style="font-weight:bold");
                 curTr << curTd;
-                # 5个一行
-                if (index + 1) % 5 == 0:
-                    curTable << curTr;
-                    curTr = tr();
 
             curTr = tr();
             curTr << td(otherSource.toString(numTotalCrashes), style="font-weight:bold");
