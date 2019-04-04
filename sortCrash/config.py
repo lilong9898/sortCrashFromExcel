@@ -96,10 +96,8 @@ EXCEL_COL_INDEX_UPLOAD_TIME = 16;
 # 关注哪些cause进行分类统计
 # 这个类代表由相同原因引起的一类crash的数量统计，"相同原因"看crash msg中是否包含同样的cause字符串
 SAME_CAUSE_LIST = [
-    CrashSameCause("com.zhangyue.common.xeonPush.services.ReaderJobService"),
-    CrashSameCause("java.lang.ClassNotFoundException"),
-    CrashSameCause("java.lang.NoClassDefFoundError"),
-    CrashSameCause("java.lang.IndexOutOfBoundsException: Invalid index"),
+    CrashSameCause("com.zhangyue.bookstore.adapter.MoreAdapter.isAudioHolder"),
+    CrashSameCause("com.zhangyue.bookstore2.ui.widget.RecommendBookLayout$a.a"),
 ];
 # 不关注的都归类到others
 OTHER_CAUSE = CrashSameCause("others");
@@ -119,6 +117,8 @@ SAME_SOURCE_LIST = [
     CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF.", "com.zhangyue.iReader.PDF2."]),
     CrashSameSource("插件group", ["pluginwebdiff_group", "com.zhangyue.group."]),
     CrashSameSource("插件personal", ["pluginwebdiff_personal", "com.zhangyue.personal.", "com.zhangyue.player."]),
+    CrashSameSource("插件ad", ["pluginwebdiff_ad", "com.zhangyue.iReader.module.driver.ad.", "com.zhangyue.module.ad."]),
+    CrashSameSource("插件business", ["pluginwebdiff_business", "com.zhangyue.iReader.module.business.", "com.zhangyue.iReader.module.driver.business"]),
 ];
 
 # 不关注的都归类到"主工程"
