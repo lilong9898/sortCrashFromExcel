@@ -117,7 +117,7 @@ SAME_SOURCE_LIST = [
     CrashSameSource("插件pdf", ["pluginwebdiff_pdf", "com.zhangyue.iReader.PDF.", "com.zhangyue.iReader.PDF2."]),
     CrashSameSource("插件group", ["pluginwebdiff_group", "com.zhangyue.group."]),
     CrashSameSource("插件personal", ["pluginwebdiff_personal", "com.zhangyue.personal.", "com.zhangyue.player."]),
-    CrashSameSource("插件ad", ["pluginwebdiff_ad", "com.zhangyue.iReader.module.driver.ad.", "com.zhangyue.module.ad."]),
+    CrashSameSource("插件ad", ["pluginwebdiff_ad", "com.zhangyue.iReader.module.driver.ad.", "com.zhangyue.module.ad.", "com.zhangyue.we.ad"]),
     CrashSameSource("插件business", ["pluginwebdiff_business", "com.zhangyue.iReader.module.business.", "com.zhangyue.iReader.module.driver.business"]),
 ];
 
