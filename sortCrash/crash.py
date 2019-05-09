@@ -334,5 +334,7 @@ class Crash:
 
     # 在去重时，dict所使用的key应为strCrashTrimmed去掉所有行号(xx:yyyyy)之后的字符串
     def getKey(self):
-        return re.sub(r"\([a-zA-Z0-9\.]+:[0-9]*\)", "", self.strCrashTrimmed);
+        strKey = re.sub(r"\([a-zA-Z0-9\.]+:[0-9]*\)", "", self.strCrashTrimmed);
+        strKey = re.sub(r"RuntimeInit", "ZygoteInit", strKey)
+        return strKey
     pass
